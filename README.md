@@ -6,17 +6,21 @@
 
 ## Why?
 
-I wanted to build a flexible, lightweight personal website, and Nikola was the one I reached for due to its simplicity, lightweight nature, and my general familiarity with Pythonic workflows. While working on these custom styles, I realized that there were some things that *should* be there (for proper accessibility) and others that *could* be there (to make the site feel cooler) but required editing low-level templates. After tweaking it for my own website, I pulled the code out into a reusable theme so others can skip the learning curve of Nikola's internals and just build a clean website.
+I wanted to build a flexible, lightweight personal website, and Nikola was the one I reached for due to the aforementioned simplicity and lightweight nature, as well as my general familiarity with Pythonic workflows. The reason why this came into being is that while doing those customizations, I realized that there are some things that **should** be there and others that **could** be there to make it cooler but that required somewhat low-level editing. Thus, I did it for my website, then pulled the theme out, and now it's here for everyone who wants to not go through the time I did to learn the internal workings of this SSG and just make a website.
 
 ---
 
 ## Key Features
 
 ### 1. Accessibility (A11y) Improvements
-- **Proper Current Page Indicators**: Replaces the generic active class markup with `aria-current="page"` on menu links and dropdown items, allowing screen readers to accurately identify the active page. By default, Bootstrap 4 hardcodes the word 'active' as plain text next to the link. While that visually highlights the page, my detail-oriented mind was unhappy with this WCAG accessibility violation.
-- **Removed Heading Self-Links**: Strips the redundant `<a>` anchor link from post/page `<h1>` title headings when viewing that specific post or page. There is no clear visual purpose to linking to the page you are already on, and from a screen reader perspective, hearing "link same page" repeatedly is highly redundant and annoying.
-- **Smart Logo Alt Text**: Adds support for custom theme-specific logo alternative text (`LOGO_ALT_TEXT`). Previously, Nikola forced the logo image's alt text to fall back to the site title. We updated it so you can describe your actual brand logo properly.
-- **Hidden Text Redundancy**: Hides the textual logo/blog title via `aria-hidden="true"` if a visual brand logo is already enabled and has an alternative description. Previously, a screen reader would read both the logo's alt text *and* the adjacent text title. Now, only the descriptive logo alt text is read, keeping navigation clean.
+- **Proper Current Page Indicators**: Replaces the generic active class markup with `aria-current="page"` on menu links and dropdown items, allowing screen readers to accurately identify the active page. I don't even know why Bootstrap 4 does this—it literally has "active" in plain text hardcoded. And while it worked, my annoyingly detail-oriented mind was very unhappy with this violation of WCAG.
+- **Removed Heading Self-Links**: Strips the redundant `<a>` anchor link from post/page `<h1>` title headings when viewing that specific post or page. I don't know how this looked visually (I can't personally imagine what purpose it would serve to link to the page you are already on, but at least from a screen reader perspective it was very redundant and annoying to hear "link same page").
+- **Smart Logo Alt Text**: Adds support for custom theme-specific logo alternative text (`LOGO_ALT_TEXT`). Previously, Nikola hardcoded the logo's alt text to fall back to the site title (`alt="${blog_title}"`).
+  - *Before*: Screen reader reads: `"My Awesome Website!"` (just site title)
+  - *Now*: Screen reader reads: `"My Awesome Website Logo: Me bent over a terminal with a lukewarm coffee sitting on the desk for the past six hours..."`
+- **Hidden Text Redundancy**: As a follow-up to the previous change, it hides the textual logo/blog title via `aria-hidden="true"` if a visual brand logo is already enabled and has an alternative description.
+  - *Before*: Screen reader reads: `"My Awesome Website Logo: Me bent over a terminal... My Awesome Website!"`
+  - *Now*: Screen reader reads: `"My Awesome Website Logo: Me bent over a terminal..."`
 - **Optimized Footer Hierarchy**: Placed `<footer id="footer">` directly under the root container for cleaner structural landmark navigation.
 
 ### 2. Client-Local Timezone Conversion
@@ -24,7 +28,9 @@ I wanted to build a flexible, lightweight personal website, and Nikola was the o
 - **Client-Side Processing**: Uses a lightweight JavaScript snippet that converts dates dynamically when the page loads, leaving the default static dates as a fallback if JavaScript is disabled.
 
 ### 3. Clean Blog Title Layouts
-- **Distinct Browser Titles**: Automatically updates the `<title>` tag for the `/blog` section to read `Blog | <Site Title>` instead of showing a generic landing name. Previously, visiting the blog page would set the browser tab title to just the site's default name, making tab navigation confusing.
+- **Distinct Browser Titles**: Automatically updates the `<title>` tag for the `/blog` section to read `Blog | <Site Title>` instead of showing a generic landing name.
+  - *Before*: Browser tab title says: `"My Personal Awesome Website!"`
+  - *Now*: Browser tab title says: `"Blog | My Personal Awesome Website!"`
 
 ---
 
