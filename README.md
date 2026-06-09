@@ -28,7 +28,7 @@ To use this theme in your Nikola website:
 
 1. Clone or copy this repository into your website's `themes/` directory under the name `lazykola-a11y`:
    ```bash
-   git clone https://github.com/yourusername/lazykola-a11y.git themes/lazykola-a11y
+   git clone https://github.com/aarushb/lazykola-a11y.git themes/lazykola-a11y
    ```
 2. Open your website's `conf.py` configuration file.
 3. Update or set the `THEME` variable:
