@@ -1,0 +1,13 @@
+name = "lazykola-comments"
+main = "src/index.js"
+compatibility_date = "2024-04-03"
+
+# Environment variables that are safe to expose (or placeholders)
+[vars]
+# AUTO_APPROVE = "false" # Set to "true" to skip moderation
+
+[[d1_databases]]
+binding = "DB"
+database_name = "lazykola-db"
+database_id = "PLACEHOLDER_D1_DATABASE_ID" # Will be replaced during setup
+migrations_dir = "./"
