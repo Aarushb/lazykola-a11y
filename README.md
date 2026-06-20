@@ -62,7 +62,7 @@ To use this theme in your Nikola website:
 
 ## Serverless Comments Setup
 
-To set up the database, deploy the edge Worker, and moderate comments, follow the detailed step-by-step instructions in the [Comment Server README](file:///d:/PROGRAMMING/projects/lazycola-a11y/lazykola-comment-server/README.md).
+To set up the database, deploy the edge Worker, and moderate comments, follow the detailed step-by-step instructions in the [Comment Server README](lazykola-comment-server/README.md).
 
 Once deployed, enable comments in your Nikola `conf.py`:
 ```python
