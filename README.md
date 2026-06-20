@@ -33,10 +33,11 @@ I wanted to build a flexible, lightweight personal website, and Nikola was the o
   - *Now*: Browser tab title says: `"Blog | My Personal Awesome Website!"`
 
 ### 4. Zero-Maintenance Serverless Comments
-- **Edge-Powered Discussion**: Connects your static site to an on-demand comment system powered by Cloudflare Workers and D1 database.
-- **Privacy Hashing**: Uses SHA-256 to hash commenter emails for secure Gravatar avatars without exposing their raw email addresses to the public.
-- **Embedded Moderation Panel**: Includes a clean, responsive password-protected admin dashboard served directly from your Worker.
-- **Built-in Spam Blockers**: CSS honeypots, optional Cloudflare Turnstile CAPTCHA checks, and Discord webhook notifications for new comments.
+- **Edge-Powered Discussion**: Connects your static site to a fast, edge-hosted comment backend running on a free Cloudflare Worker and D1 SQL database.
+  - *Why?* Because I wanted a comment system without paying for a dedicated virtual private server (VPS) or putting tracking-heavy, ad-bloated widgets like Disqus on my personal site. The fact that standard static site comment systems require either renting a server or selling user data to third-party advertisers makes zero sense to me.
+- **Privacy-First Email Hashing**: Automatically hashes commenter emails on the server using SHA-256 to load Gravatar avatars, keeping the raw emails hidden from public browsers.
+- **Self-Hosted Administration**: Includes a built-in, password-protected moderation dashboard served directly at `/admin` from your Worker. You can approve, reject, or mark comments as spam in one click.
+- **Multi-layered Spam Blockers**: Uses a silent CSS-hidden honeypot to catch automated bot requests immediately, and supports optional Cloudflare Turnstile and Discord webhooks to alert you of pending comments.
 
 ---
 
