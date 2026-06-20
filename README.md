@@ -33,13 +33,14 @@ I wanted to build a flexible, lightweight personal website, and Nikola was the o
   - *Now*: Browser tab title says: `"Blog | My Personal Awesome Website!"`
 
 ### 4. Zero-Maintenance Serverless Comments
-- **Edge-Powered Discussion**: Connects your static site to a fast, edge-hosted comment backend running on a free Cloudflare Worker and D1 SQL database.
-  - *Why?* Because I wanted a comment system without paying for a dedicated virtual private server (VPS) or putting tracking-heavy, ad-bloated widgets like Disqus on my personal site. The fact that standard static site comment systems require either renting a server or selling user data to third-party advertisers makes zero sense to me.
-- **Privacy-First Email Hashing**: Automatically hashes commenter emails on the server using SHA-256 to load Gravatar avatars, keeping the raw emails hidden from public browsers.
-- **Self-Hosted Administration**: Includes a built-in, password-protected moderation dashboard served directly at `/admin` from your Worker. You can approve, reject, or mark comments as spam in one click.
-- **Multi-layered Spam Blockers**: Uses a silent CSS-hidden honeypot to catch automated bot requests immediately, and supports optional Cloudflare Turnstile and Discord webhooks to alert you of pending comments.
+My biggest hesitation when switching from a CMS like WordPress to an SSG was the fact that I couldn't easily allow people to leave comments. Every system Nikola supported was either impractical or required hosting my own backend database—trouble I didn't want to deal with (I already host enough VPS apps that I'm notoriously bad at keeping track of, and running active server applications defeats the static purpose).
 
----
+So, I built an out-of-the-box system that deploys in 3 minutes and adds zero overhead by relying on **Cloudflare's** free edge database and Workers.
+
+- **Edge-Powered Discussion**: Dynamically loads and posts comments via a lightweight API connected to a serverless Cloudflare D1 SQL database.
+- **Privacy-First Email Hashing**: Hashes commenter emails on the server using SHA-256 to load Gravatar avatars, keeping raw emails hidden from public browsers.
+- **Self-Hosted Administration**: Serves a clean, password-protected moderation dashboard directly from your Worker at `/admin` (approve/reject/spam comments in one click).
+- **Multi-layered Spam Blockers**: Uses a silent CSS-hidden honeypot to trap bots, and supports optional Cloudflare Turnstile checks and Discord alerts for pending comments.
 
 ## Installation
 
