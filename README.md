@@ -32,6 +32,12 @@ I wanted to build a flexible, lightweight personal website, and Nikola was the o
   - *Before*: Browser tab title says: `"My Personal Awesome Website!"`
   - *Now*: Browser tab title says: `"Blog | My Personal Awesome Website!"`
 
+### 4. Zero-Maintenance Serverless Comments
+- **Edge-Powered Discussion**: Connects your static site to an on-demand comment system powered by Cloudflare Workers and D1 database.
+- **Privacy Hashing**: Uses SHA-256 to hash commenter emails for secure Gravatar avatars without exposing their raw email addresses to the public.
+- **Embedded Moderation Panel**: Includes a clean, responsive password-protected admin dashboard served directly from your Worker.
+- **Built-in Spam Blockers**: CSS honeypots, optional Cloudflare Turnstile CAPTCHA checks, and Discord webhook notifications for new comments.
+
 ---
 
 ## Installation
@@ -54,9 +60,21 @@ To use this theme in your Nikola website:
 
 ---
 
+## Serverless Comments Setup
+
+To set up the database, deploy the edge Worker, and moderate comments, follow the detailed step-by-step instructions in the [Comment Server README](file:///d:/PROGRAMMING/projects/lazycola-a11y/lazykola-comment-server/README.md).
+
+Once deployed, enable comments in your Nikola `conf.py`:
+```python
+COMMENT_SYSTEM = "lazykola"
+COMMENT_SYSTEM_ID = "https://your-comments-worker.yourname.workers.dev"
+```
+
+---
+
 ## Configuration Options
 
-To customize the logo and navigation behavior of this theme, specify the following parameters in your `conf.py` under the `THEME_CONFIG` dictionary:
+To customize the logo, navigation behavior, and comments verification, specify the parameters in your `conf.py` under the `THEME_CONFIG` dictionary:
 
 ```python
 THEME_CONFIG = {
@@ -72,6 +90,9 @@ THEME_CONFIG = {
         
         # Custom background color class for the navbar (e.g., bg-primary, bg-warning, bg-info)
         "navbar_custom_bg": "bg-dark",
+
+        # Optional: Cloudflare Turnstile site key for comments form validation
+        "comment_turnstile_site_key": "your-turnstile-site-key",
     }
 }
 ```
@@ -80,3 +101,4 @@ THEME_CONFIG = {
 
 ## License
 This theme is open-source and licensed under the [MIT License](LICENSE).
+
