@@ -33,14 +33,14 @@ I wanted to build a flexible, lightweight personal website, and Nikola was the o
   - *Now*: Browser tab title says: `"Blog | My Personal Awesome Website!"`
 
 ### 4. Zero-Maintenance Serverless Comments
-My biggest hesitation when switching from a CMS like WordPress to an SSG was the fact that I couldn't easily allow people to leave comments. Every system Nikola supported was either impractical or required hosting my own backend database—trouble I didn't want to deal with (I already host enough VPS apps that I'm notoriously bad at keeping track of, and running active server applications defeats the static purpose).
+My biggest hesitation when switching from a CMS like WordPress to an SSG was the fact that I couldn't easily allow people to leave comments (feedback is important!). Every system Nikola supported was too much mainenance for someone that just wants to have a sight. Especially the ones requiring you to host your own comment server. I already host enough VPS apps that I'm notoriously bad at keeping track of. Plus,  running active server applications defeats the static purpose anyway.
 
-So, I built an out-of-the-box system that deploys in 3 minutes and adds zero overhead by relying on **Cloudflare's** free edge database and Workers.
+So, I built an out-of-the-box (or dirty hack, depending on the perspective) system that deploys in 3 minutes and adds zero overhead by relying on **Cloudflare's** free edge database and Workers.
 
-- **Edge-Powered Discussion**: Dynamically loads and posts comments via a lightweight API connected to a serverless Cloudflare D1 SQL database.
-- **Privacy-First Email Hashing**: Hashes commenter emails on the server using SHA-256 to load Gravatar avatars, keeping raw emails hidden from public browsers.
-- **Self-Hosted Administration**: Serves a clean, password-protected moderation dashboard directly from your Worker at `/admin` (approve/reject/spam comments in one click).
-- **Multi-layered Spam Blockers**: Uses a silent CSS-hidden honeypot to trap bots, and supports optional Cloudflare Turnstile checks and Discord alerts for pending comments.
+- Edge-Powered Discussion: Dynamically loads and posts comments via a lightweight API connected to a serverless Cloudflare D1 SQL database.
+- Privacy-First Email Hashing: Hashes commenter emails on the server using SHA-256 to load Gravatar avatars, keeping raw emails hidden from public browsers.
+- Self-Hosted Administration: Serves a clean, password-protected moderation dashboard directly from your Worker at `/admin` (approve/reject/spam comments in one click).
+- Multi-layered Spam Blockers: Uses a silent CSS-hidden honeypot to trap bots, and supports optional Cloudflare Turnstile checks and Discord alerts for pending comments.
 
 ## Installation
 
