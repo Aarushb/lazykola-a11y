@@ -8,13 +8,15 @@
 
 I wanted to build a flexible, lightweight personal website, and Nikola was the one I reached for due to the aforementioned simplicity and lightweight nature, as well as my general familiarity with Pythonic workflows. The reason why this came into being is that while doing those customizations, I realized that there are some things that **should** be there and others that **could** be there to make it cooler but that required somewhat low-level editing. Thus, I did it for my website, then pulled the theme out, and now it's here for everyone who wants to not go through the time I did to learn the internal workings of this SSG and just make a website.
 
+I also blessedly, did not have to do this from the ground up. Thanks to [Carter Temm](https://github.com/cartertemm) for inspiring this, by building a variant of the theme bootstrap4 called bootstrap4_acccessible. This is where the very first feature comes from.
+
 ---
 
 ## Key Features
 
 ### 1. Accessibility (A11y) Improvements
-- **Proper Current Page Indicators**: Replaces the generic active class markup with `aria-current="page"` on menu links and dropdown items, allowing screen readers to accurately identify the active page. I don't even know why Bootstrap 4 does this—it literally has "active" in plain text hardcoded. And while it worked, my annoyingly detail-oriented mind was very unhappy with this violation of WCAG.
-- **Removed Heading Self-Links**: Strips the redundant `<a>` anchor link from post/page `<h1>` title headings when viewing that specific post or page. I don't know how this looked visually (I can't personally imagine what purpose it would serve to link to the page you are already on, but at least from a screen reader perspective it was very redundant and annoying to hear "link same page").
+- **Proper Current Page Indicators**: Replaces the generic active class markup with `aria-current="page"` on menu links and dropdown items allowing screen readers to accurately identify the active page. Bootstrap4 had hardcoded the word "active", not sure why the workaround when there is a perfectly viable [WCAG](https://www.w3.org/WAI/standards-guidelines/wcag/) solution.
+- **Removed Heading Self-Links**: Strips the redundant `<a>` anchor link from post/page `<h1>` title headings when viewing that specific post or page. I don't know how this looked visually (I can't personally imagine what purpose it would serve to link to the page you are already on, but at least from a screen reader perspective it was very annoying to hear "link same page").
 - **Smart Logo Alt Text**: Adds support for custom theme-specific logo alternative text (`LOGO_ALT_TEXT`). Previously, Nikola hardcoded the logo's alt text to fall back to the site title (`alt="${blog_title}"`).
   - *Before*: Screen reader reads: `"My Awesome Website!"` (just site title)
   - *Now*: Screen reader reads: `"My Awesome Website Logo: Me bent over a terminal with a lukewarm coffee sitting on the desk for the past six hours..."`
@@ -33,7 +35,7 @@ I wanted to build a flexible, lightweight personal website, and Nikola was the o
   - *Now*: Browser tab title says: `"Blog | My Personal Awesome Website!"`
 
 ### 4. Zero-Maintenance Serverless Comments
-My biggest hesitation when switching from a CMS like WordPress to an SSG was the fact that I couldn't easily allow people to leave comments (feedback is important!). Every system Nikola supported was too much mainenance for someone that just wants to have a sight. Especially the ones requiring you to host your own comment server. I already host enough VPS apps that I'm notoriously bad at keeping track of. Plus,  running active server applications defeats the static purpose anyway.
+My biggest hesitation when switching from a CMS like WordPress to an SSG was the fact that I couldn't easily allow people to leave comments (feedback is important!). Every system Nikola supported was too much maintenance for someone that just wants to have a sight. Especially the ones requiring you to host your own comment server. I already host enough VPS apps that I'm notoriously bad at keeping track of. Plus,  running active server applications defeats the static purpose anyway.
 
 So, I built an out-of-the-box (or dirty hack, depending on the perspective) system that deploys in 3 minutes and adds zero overhead by relying on **Cloudflare's** free edge database and Workers.
 
