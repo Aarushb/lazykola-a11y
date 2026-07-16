@@ -4,6 +4,7 @@ ${set_locale(lang)}
 ${base.html_headstart()}
 
 <%block name="extra_head">
+<link rel="stylesheet" href="/assets/css/copy.css">
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             document.querySelectorAll('.client-local-time').forEach(el => {
@@ -46,10 +47,8 @@ bg-dark
         src="${theme_config.get('LOGO_URL')}"
         alt="${theme_config.get('LOGO_ALT_TEXT') or blog_title|h}"
         id="logo" class="d-inline-block align-top">
-%endif
-
-% if show_blog_title:
-    <span id="blog-title" aria-hidden="true">${blog_title|h}</span>
+% elif show_blog_title:
+    <span id="blog-title">${blog_title|h}</span>
 % endif
 </a>
 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -113,6 +112,7 @@ ${base.late_load_js()}
         ignoreClass: 'islink',
         captions: function(element){var i=element.getElementsByTagName('img')[0];return i===undefined?'':i.alt;}});
     </script>
+    <script src="/assets/js/copy.js"></script>
 ${body_end}
 ${template_hooks['body_end']()}
 </body>

@@ -16,11 +16,12 @@ I also blessedly, did not have to do this from the ground up. Thanks to [Carter 
 
 ### 1. Accessibility (A11y) Improvements
 - **Proper Current Page Indicators**: Replaces the generic active class markup with `aria-current="page"` on menu links and dropdown items allowing screen readers to accurately identify the active page. Bootstrap4 had hardcoded the word "active", not sure why the workaround when there is a perfectly viable [WCAG](https://www.w3.org/WAI/standards-guidelines/wcag/) solution.
-- **Removed Heading Self-Links**: Strips the redundant `<a>` anchor link from post/page `<h1>` title headings when viewing that specific post or page. I don't know how this looked visually (I can't personally imagine what purpose it would serve to link to the page you are already on, but at least from a screen reader perspective it was very annoying to hear "link same page").
+- **Removed Heading Self-Links**: Strips the redundant `<a>` anchor link from post/page title headings when viewing that specific post or page. I don't know how this looked visually (I can't personally imagine what purpose it would serve to link to the page you are already on, but at least from a screen reader perspective it was very annoying to hear "link same page").
+- **Corrected Heading Hierarchy**: Post/page title headings are now rendered as `<h2>` instead of `<h1>`, so they nest properly under the page's own top-level landmark structure instead of competing with it. This keeps the outline sane for screen reader users who navigate by heading level.
 - **Smart Logo Alt Text**: Adds support for custom theme-specific logo alternative text (`LOGO_ALT_TEXT`). Previously, Nikola hardcoded the logo's alt text to fall back to the site title (`alt="${blog_title}"`).
   - *Before*: Screen reader reads: `"My Awesome Website!"` (just site title)
   - *Now*: Screen reader reads: `"My Awesome Website Logo: Me bent over a terminal with a lukewarm coffee sitting on the desk for the past six hours..."`
-- **Hidden Text Redundancy**: As a follow-up to the previous change, it hides the textual logo/blog title via `aria-hidden="true"` if a visual brand logo is already enabled and has an alternative description.
+- **No More Redundant Title Text**: As a follow-up to the previous change, the textual blog title is no longer rendered at all once a visual brand logo (`LOGO_URL`) is configured, rather than being kept in the DOM and merely hidden from assistive tech via `aria-hidden="true"`. The logo's `alt` text is the single source of truth for what gets announced.
   - *Before*: Screen reader reads: `"My Awesome Website Logo: Me bent over a terminal... My Awesome Website!"`
   - *Now*: Screen reader reads: `"My Awesome Website Logo: Me bent over a terminal..."`
 - **Optimized Footer Hierarchy**: Placed `<footer id="footer">` directly under the root container for cleaner structural landmark navigation.
@@ -43,6 +44,11 @@ So, I built an out-of-the-box (or dirty hack, depending on the perspective) syst
 - Privacy-First Email Hashing: Hashes commenter emails on the server using SHA-256 to load Gravatar avatars, keeping raw emails hidden from public browsers.
 - Self-Hosted Administration: Serves a clean, password-protected moderation dashboard directly from your Worker at `/admin` (approve/reject/spam comments in one click).
 - Multi-layered Spam Blockers: Uses a silent CSS-hidden honeypot to trap bots, and supports optional Cloudflare Turnstile checks and Discord alerts for pending comments.
+
+### 5. Copy-to-Clipboard Code Blocks
+- **One-Click Copying**: Automatically wraps every `<pre>` code block with a "Copy" button, letting readers copy a snippet without manually selecting text.
+- **Accessible by Default**: The button is a real, keyboard-focusable `<button>` with an `aria-label="Copy code to clipboard"`, and its text changes to "Copied!" (with a distinct visual style) for a couple of seconds after use to confirm the action for sighted and screen-reader users alike.
+- **Zero Configuration**: Ships as a small, dependency-free `copy.js`/`copy.css` pair that's automatically included by the theme; no setup required.
 
 ## Installation
 
@@ -82,7 +88,7 @@ To customize the logo, navigation behavior, and comments verification, specify t
 
 ```python
 THEME_CONFIG = {
-    "en": {
+    DEFAULT_LANG: {
         # Path to your custom brand logo image file
         "LOGO_URL": "/assets/images/logo.png",
         
