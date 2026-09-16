@@ -59,6 +59,19 @@ article.post-micro {
     font-size: 1.5em;
 }
 
+/* Opt back out of the h1-h6 --site-font-heading rule below: post-micro's
+   Georgia treatment above relies on inheritance, but the h1-h6 rule's
+   declared value wins over inherited Georgia for any heading rendered
+   inside a micro post (see templates/post_header.tmpl). */
+article.post-micro h1,
+article.post-micro h2,
+article.post-micro h3,
+article.post-micro h4,
+article.post-micro h5,
+article.post-micro h6 {
+    font-family: inherit;
+}
+
 .image-block {
     display: inline-block;
 }
@@ -201,6 +214,17 @@ ul.pager li a,
 /* hat tip bootstrap/html5 boilerplate */
 @media print {
     *, *:before, *:after {
+        font-family: Garamond, Junicode, serif;
+    }
+
+    /* The h1-h6 --site-font-heading rule above shares this rule's
+       (0,0,1) specificity with the universal selector's (0,0,0), so on
+       its own the universal rule loses to it for headings even during
+       print. This selector matches the offending rule's specificity
+       exactly; since it is declared later in the stylesheet (this
+       @media print block comes after the h1-h6 rule), equal-specificity
+       cascade order lets it win without needing !important. */
+    h1, h2, h3, h4, h5, h6 {
         font-family: Garamond, Junicode, serif;
     }
 
