@@ -41,6 +41,8 @@ preset = presets.module.PRESETS.get(preset_key) if preset_key else None
 }
 % endif
 </style>
+% elif preset_key:
+<!-- lazykola: unknown PRESET "${preset_key|h}", falling back to theme defaults -->
 % endif
 ${template_hooks['extra_head']()}
 </head>
