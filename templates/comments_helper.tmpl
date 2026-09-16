@@ -141,7 +141,7 @@
             .lk-comment-card {
               background-color: var(--lk-bg-card);
               border: 1px solid var(--lk-border);
-              border-radius: 12px;
+              border-radius: calc(var(--site-radius) * 3);
               padding: 1.25rem;
               margin-bottom: 1rem;
               transition: border-color 0.2s ease, box-shadow 0.2s ease;
@@ -216,7 +216,7 @@
             .lk-btn-reply {
               background: none;
               border: 1px solid var(--lk-border);
-              border-radius: 6px;
+              border-radius: calc(var(--site-radius) * 1.5);
               padding: 0.3rem 0.8rem;
               font-size: 0.85rem;
               font-weight: 600;
@@ -262,7 +262,7 @@
               color: var(--lk-accent-hover);
               outline: 2px solid var(--lk-border-focus);
               outline-offset: 2px;
-              border-radius: 4px;
+              border-radius: var(--site-radius);
             }
 
             /* Form Styling */
@@ -273,7 +273,7 @@
               background-color: var(--lk-bg-card);
               border: 1px solid var(--lk-border);
               padding: 1.5rem;
-              border-radius: 16px;
+              border-radius: calc(var(--site-radius) * 4);
             }
 
             .lk-form-grid {
@@ -310,7 +310,7 @@
             .lk-form-group input, .lk-form-group textarea {
               background-color: rgba(255, 255, 255, 0.05);
               border: 1px solid var(--lk-border);
-              border-radius: 8px;
+              border-radius: calc(var(--site-radius) * 2);
               padding: 0.6rem 0.8rem;
               color: inherit;
               font-family: inherit;
@@ -335,7 +335,7 @@
 
             .lk-form-actions button {
               padding: 0.6rem 1.5rem;
-              border-radius: 8px;
+              border-radius: calc(var(--site-radius) * 2);
               font-weight: 600;
               cursor: pointer;
               transition: all 0.2s ease;
@@ -380,7 +380,7 @@
 
             #lk-form-message {
               padding: 0.75rem 1rem;
-              border-radius: 8px;
+              border-radius: calc(var(--site-radius) * 2);
               font-size: 0.9rem;
               display: none;
             }
