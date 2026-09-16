@@ -135,13 +135,30 @@ article.post-micro {
 
 /* WCAG AA fixes for Bootstrap 4 defaults */
 
+/* Design-preset tokens. Defaults below match the theme's current look
+   exactly -- a site with no THEME_CONFIG["PRESET"] set renders identically
+   to before these tokens existed. */
+:root {
+    --site-accent: #0056b3;
+    --site-accent-solid: #0056b3;
+    --site-font-heading: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --site-font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --site-radius: 0.25rem;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --site-accent: #6ea8fe;
+    }
+}
+
 /* Bootstrap's default link color (#007bff) is only 3.98:1 on white, below the
    4.5:1 AA minimum for normal text. This darker shade is Bootstrap's own
    a:hover color, so it stays on-brand. Applied globally and then explicitly
    undone below for UI chrome (nav, buttons, badges, pager, brand) that isn't
    a link embedded in running text. */
 a {
-    color: #0056b3;
+    color: var(--site-accent);
     text-decoration: underline;
 }
 
@@ -288,7 +305,7 @@ html[dir="rtl"] body {
     }
 
     a {
-        color: #6ea8fe;
+        color: var(--site-accent);
     }
 
     a:hover, a:focus {
@@ -302,5 +319,32 @@ html[dir="rtl"] body {
 
     ul.pager li a {
         border-color: #444;
+    }
+}
+
+/* Design-preset density and card-style overrides. Both are no-ops unless
+   a preset (Task 3+) sets the matching data-* attribute on <body>. Scoped
+   to the theme's own custom surfaces only -- not a full Bootstrap retheme. */
+[data-density="compact"] .lk-comment-card {
+    padding: 0.85rem;
+}
+
+[data-density="compact"] pre,
+[data-density="compact"] .codetable {
+    padding: 0.5rem;
+}
+
+[data-card-style="flat"] .lk-comment-card {
+    border: none;
+}
+
+[data-card-style="shadowed"] .lk-comment-card {
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+    [data-card-style="shadowed"] .lk-comment-card {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     }
 }
