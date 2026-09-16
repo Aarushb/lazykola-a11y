@@ -68,10 +68,29 @@
             :root {
               --lk-bg-card: rgba(128, 128, 128, 0.05);
               --lk-border: rgba(128, 128, 128, 0.15);
+              /* Text/border/outline accent (against the page background).
+                 Buttons that fill this color solid behind white text use
+                 --lk-accent-solid instead, since that's a different contrast
+                 pairing (white-on-fill, not accent-on-page) with its own
+                 requirement that doesn't change between light and dark. */
               --lk-border-focus: #4f46e5;
+              --lk-accent-hover: #4338ca;
+              --lk-accent-solid: #4f46e5;
+              --lk-accent-solid-hover: #4338ca;
               --lk-text-muted: #6b7280;
               --lk-success: #10b981;
               --lk-error: #ef4444;
+            }
+
+            /* #4f46e5 only hits 2.98:1 as text/outline on a dark page
+               background, below the 3:1 AA minimum; #6b7280 similarly only
+               hits 3.67:1, below the 4.5:1 AA minimum for muted text. */
+            @media (prefers-color-scheme: dark) {
+              :root {
+                --lk-border-focus: #818cf8;
+                --lk-accent-hover: #a5b4fc;
+                --lk-text-muted: #9ca3af;
+              }
             }
 
             #lazykola-comments-wrapper {
@@ -170,6 +189,18 @@
               gap: 0.5rem;
             }
 
+            /* Bootstrap's reboot sets -webkit-appearance: button on every raw
+               <button>; without overriding it back to none, some browsers
+               fall back to native widget theming for color/background
+               instead of respecting these custom styles. */
+            .lk-btn-reply,
+            .lk-expand-replies,
+            #lk-submit-btn,
+            #lk-cancel-reply-btn {
+              appearance: none;
+              -webkit-appearance: none;
+            }
+
             .lk-btn-reply {
               background: none;
               border: 1px solid var(--lk-border);
@@ -183,7 +214,7 @@
             }
 
             .lk-btn-reply:hover, .lk-btn-reply:focus {
-              background-color: var(--lk-border-focus);
+              background-color: var(--lk-accent-solid);
               color: white;
               border-color: var(--lk-border-focus);
             }
@@ -212,11 +243,11 @@
             }
 
             .lk-expand-replies:hover {
-              color: #4338ca;
+              color: var(--lk-accent-hover);
             }
 
             .lk-expand-replies:focus {
-              color: #4338ca;
+              color: var(--lk-accent-hover);
               outline: 2px solid var(--lk-border-focus);
               outline-offset: 2px;
               border-radius: 4px;
@@ -274,12 +305,6 @@
               transition: border-color 0.2s ease, box-shadow 0.2s ease;
             }
 
-            /* Dark/light input compatibility */
-            body.navbar-light .lk-form-group input,
-            body.navbar-light .lk-form-group textarea {
-              background-color: #ffffff;
-            }
-
             .lk-form-group input:focus, .lk-form-group textarea:focus {
               outline: none;
               border-color: var(--lk-border-focus);
@@ -300,13 +325,18 @@
             }
 
             #lk-submit-btn {
-              background-color: var(--lk-border-focus);
+              background-color: var(--lk-accent-solid);
               color: white;
               border: none;
             }
 
             #lk-submit-btn:hover, #lk-submit-btn:focus {
-              background-color: #4338ca;
+              background-color: var(--lk-accent-solid-hover);
+            }
+
+            #lk-submit-btn:focus {
+              outline: 2px solid var(--lk-border-focus);
+              outline-offset: 2px;
             }
 
             #lk-submit-btn:disabled {

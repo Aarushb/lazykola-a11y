@@ -277,3 +277,30 @@ html[dir="rtl"] body {
     line-height: inherit;
     display: inline-block;
 }
+
+/* Dark mode, following the visitor's OS/browser preference. The navbar's own
+   light/dark styling (THEME_CONFIG's navbar_light) is a separate, explicit
+   site-owner choice and is left untouched here. */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #121212;
+        color: #e4e4e4;
+    }
+
+    a {
+        color: #6ea8fe;
+    }
+
+    a:hover, a:focus {
+        color: #9ec5fe;
+    }
+
+    #footer {
+        color: #a0a0a0;
+        border-top-color: #333;
+    }
+
+    ul.pager li a {
+        border-color: #444;
+    }
+}
