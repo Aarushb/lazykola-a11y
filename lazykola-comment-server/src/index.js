@@ -8,7 +8,13 @@ const app = new Hono();
 // Spam mitigation tuning
 const RATE_LIMIT_MAX_SUBMISSIONS = 5;
 const RATE_LIMIT_WINDOW_MINUTES = 10;
-const MAX_REPLY_DEPTH = 3;
+
+// Anti-abuse-only safety net for reply nesting (not a UX limit -- the client
+// collapses deep threads visually well before this is ever reached).
+const MAX_REPLY_DEPTH_SANITY = 20;
+
+// Shown in place of a removed comment's real content so replies underneath it stay in context
+const REMOVED_PLACEHOLDER = '[comment removed]';
 
 // Enable CORS for all origins since it's a public comments API
 // We'll configure CORS options specifically to allow POST and GET
@@ -42,23 +48,27 @@ app.get('/comments', async (c) => {
   }
 
   try {
+    // Include deleted/spam rows too (redacted below) so their approved replies
+    // don't get orphaned to top-level once the parent is no longer visible.
     const { results } = await c.env.DB.prepare(
-      'SELECT id, author_name, author_website, author_email, content, parent_id, created_at FROM comments WHERE post_url = ? AND status = "approved" ORDER BY created_at ASC'
+      'SELECT id, author_name, author_website, author_email, content, parent_id, status, created_at FROM comments WHERE post_url = ? AND status IN ("approved", "deleted", "spam") ORDER BY created_at ASC'
     )
     .bind(postUrlClean(postUrl))
     .all();
 
     // Map through results to include gravatar_hash and obscure raw emails for client privacy
     const safeComments = await Promise.all(results.map(async (row) => {
-      const hash = await getGravatarHash(row.author_email);
+      const removed = row.status === 'deleted' || row.status === 'spam';
+      const hash = removed ? '' : await getGravatarHash(row.author_email);
       return {
         id: row.id,
-        author_name: row.author_name,
-        author_website: row.author_website || '',
+        author_name: removed ? REMOVED_PLACEHOLDER : row.author_name,
+        author_website: removed ? '' : (row.author_website || ''),
         gravatar_hash: hash,
-        content: row.content,
+        content: removed ? REMOVED_PLACEHOLDER : row.content,
         parent_id: row.parent_id,
         created_at: row.created_at,
+        removed,
       };
     }));
 
@@ -192,8 +202,9 @@ app.post('/comments', async (c) => {
   }
 });
 
-// Resolves the actual parent_id a new reply should attach to, capping nesting
-// at MAX_REPLY_DEPTH by flattening deeper replies onto the deepest allowed ancestor.
+// Resolves the actual parent_id a new reply should attach to. Nesting is left
+// uncapped for the UI (the client collapses deep threads instead of flattening
+// them), but MAX_REPLY_DEPTH_SANITY still bounds it server-side against abuse.
 async function resolveReplyParent(db, requestedParentId) {
   if (!requestedParentId) return null;
 
@@ -211,12 +222,12 @@ async function resolveReplyParent(db, requestedParentId) {
   if (results.length === 0) return null; // requested parent doesn't exist; fall back to top-level
 
   const targetDepth = results[results.length - 1].depth; // real depth of the requested parent, root = 1
-  if (targetDepth < MAX_REPLY_DEPTH) {
-    return requestedParentId; // normal nesting, still within the allowed depth
+  if (targetDepth < MAX_REPLY_DEPTH_SANITY) {
+    return requestedParentId; // normal nesting, still within the sanity cap
   }
 
-  // Already at (or somehow beyond) the cap: attach as a sibling under the deepest allowed ancestor instead
-  const capAncestor = results.find(r => r.depth === MAX_REPLY_DEPTH - 1);
+  // Already at (or somehow beyond) the sanity cap: attach as a sibling under the deepest allowed ancestor instead
+  const capAncestor = results.find(r => r.depth === MAX_REPLY_DEPTH_SANITY - 1);
   return capAncestor ? capAncestor.id : null;
 }
 
@@ -323,8 +334,21 @@ app.post('/admin/api/moderate', authMiddleware, async (c) => {
     }
 
     if (status === 'deleted') {
-      await c.env.DB.prepare('DELETE FROM comments WHERE id = ?').bind(id).run();
+      // Default is to preserve replies: soft-delete (tombstone) instead of a hard DELETE,
+      // which would otherwise cascade-remove every reply underneath via the FK constraint.
+      const preserveReplies = c.env.PRESERVE_REPLIES_ON_DELETE !== 'false';
+      if (preserveReplies) {
+        await c.env.DB.prepare("UPDATE comments SET status = 'deleted' WHERE id = ?").bind(id).run();
+      } else {
+        await c.env.DB.prepare('DELETE FROM comments WHERE id = ?').bind(id).run();
+      }
       return c.json({ success: true, action: 'deleted' });
+    }
+
+    if (status === 'purged') {
+      // Explicit permanent deletion of an already soft-deleted comment; always a hard DELETE.
+      await c.env.DB.prepare('DELETE FROM comments WHERE id = ?').bind(id).run();
+      return c.json({ success: true, action: 'purged' });
     }
 
     if (status === 'approved' || status === 'spam') {

@@ -391,6 +391,7 @@ export const adminHtml = `<!DOCTYPE html>
       <button class="tab-btn active" id="tab-pending" role="tab" aria-selected="true" onclick="switchTab('pending')">Pending <span id="count-pending">0</span></button>
       <button class="tab-btn" id="tab-approved" role="tab" aria-selected="false" onclick="switchTab('approved')">Approved <span id="count-approved">0</span></button>
       <button class="tab-btn" id="tab-spam" role="tab" aria-selected="false" onclick="switchTab('spam')">Spam <span id="count-spam">0</span></button>
+      <button class="tab-btn" id="tab-deleted" role="tab" aria-selected="false" onclick="switchTab('deleted')">Deleted <span id="count-deleted">0</span></button>
     </div>
 
     <main class="comments-list" id="commentsList" aria-live="polite">
@@ -463,10 +464,12 @@ export const adminHtml = `<!DOCTYPE html>
       const pending = comments.filter(c => c.status === 'pending').length;
       const approved = comments.filter(c => c.status === 'approved').length;
       const spam = comments.filter(c => c.status === 'spam').length;
+      const deleted = comments.filter(c => c.status === 'deleted').length;
 
       document.getElementById('count-pending').textContent = pending;
       document.getElementById('count-approved').textContent = approved;
       document.getElementById('count-spam').textContent = spam;
+      document.getElementById('count-deleted').textContent = deleted;
     }
 
     function switchTab(filter) {
@@ -503,9 +506,16 @@ export const adminHtml = `<!DOCTYPE html>
         comments = comments.filter(c => c.id !== commentId);
         updateCounts();
         
+        const toastMessages = {
+          deleted: 'Comment deleted',
+          purged: 'Comment permanently deleted',
+          approved: 'Comment marked as approved',
+          spam: 'Comment marked as spam',
+        };
+
         setTimeout(() => {
           renderComments();
-          showToast(\`Comment \${action === 'deleted' ? 'deleted' : 'marked as ' + action}\`);
+          showToast(toastMessages[action] || \`Comment \${action}\`);
         }, 200);
 
       } catch (err) {
@@ -606,15 +616,21 @@ export const adminHtml = `<!DOCTYPE html>
               \${c.status === 'pending' ? \`
                 <button class="btn btn-approve" onclick="moderate(\${c.id}, 'approved')">Approve</button>
                 <button class="btn btn-spam" onclick="moderate(\${c.id}, 'spam')">Spam</button>
+                <button class="btn btn-delete" onclick="moderate(\${c.id}, 'deleted')">Delete</button>
               \` : ''}
               \${c.status === 'approved' ? \`
                 <button class="btn btn-reply" onclick="toggleReplyForm(\&quot;\${c.id}\&quot;)">Reply</button>
                 <button class="btn btn-spam" onclick="moderate(\${c.id}, 'spam')">Spam</button>
+                <button class="btn btn-delete" onclick="moderate(\${c.id}, 'deleted')">Delete</button>
               \` : ''}
               \${c.status === 'spam' ? \`
                 <button class="btn btn-approve" onclick="moderate(\${c.id}, 'approved')">Approve</button>
+                <button class="btn btn-delete" onclick="moderate(\${c.id}, 'deleted')">Delete</button>
               \` : ''}
-              <button class="btn btn-delete" onclick="moderate(\${c.id}, 'deleted')">Delete</button>
+              \${c.status === 'deleted' ? \`
+                <button class="btn btn-approve" onclick="moderate(\${c.id}, 'approved')">Restore</button>
+                <button class="btn btn-delete" onclick="moderate(\${c.id}, 'purged')">Delete Permanently</button>
+              \` : ''}
             </div>
 
             <div class="reply-form" id="reply-form-\${c.id}">

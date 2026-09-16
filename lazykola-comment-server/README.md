@@ -4,7 +4,7 @@ A lightweight, zero-maintenance comment backend designed for the `lazykola-a11y`
 
 ## Features
 - **Serverless & 100% Free:** Runs on Cloudflare's edge network within their generous free tier.
-- **Threaded/Nested Comments:** Supports hierarchical replies (up to 3 levels deep).
+- **Threaded/Nested Comments:** Supports hierarchical replies of any depth; the theme visually collapses threads past 3 levels behind a "Show more replies" toggle so long conversations stay readable instead of cluttering the page.
 - **Privacy-First (GDPR ready):** Commenter emails are hashed via SHA-256 for Gravatar and never exposed to the public frontend.
 - **Password-Protected Admin Panel:** A clean, built-in dashboard to view, approve, mark spam, or delete comments at `/admin`.
 - **Spam Mitigation:** Inbuilt CSS-hidden honeypots, optional Cloudflare Turnstile CAPTCHA validation, and server-side rate limits.
@@ -102,6 +102,17 @@ By default, comments go to `pending` until approved in the dashboard. If you wan
 2. Under `[vars]`, uncomment/add:
    ```toml
    AUTO_APPROVE = "true"
+   ```
+3. Redeploy using `npx wrangler deploy`.
+
+### Optional: Hard-Delete Instead of Preserving Replies
+By default, deleting a comment from the admin dashboard **preserves its replies** — the comment itself is replaced with a "[comment removed]" placeholder, but any genuine replies underneath it stay visible and readable. A separate "Deleted" tab in the dashboard lets you restore it or permanently purge it (and, on purge, its replies) later.
+
+If you'd rather deleting a comment always take its entire reply thread down with it immediately (no soft-delete step):
+1. Open `wrangler.toml`.
+2. Under `[vars]`, uncomment/add:
+   ```toml
+   PRESERVE_REPLIES_ON_DELETE = "false"
    ```
 3. Redeploy using `npx wrangler deploy`.
 
