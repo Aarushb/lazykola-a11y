@@ -40,7 +40,7 @@ app.get('/comments', async (c) => {
     const { results } = await c.env.DB.prepare(
       'SELECT id, author_name, author_website, author_email, content, parent_id, created_at FROM comments WHERE post_url = ? AND status = "approved" ORDER BY created_at ASC'
     )
-    .bind(postUrl)
+    .bind(postUrlClean(postUrl))
     .all();
 
     // Map through results to include gravatar_hash and obscure raw emails for client privacy
@@ -70,24 +70,28 @@ app.get('/comments/count', async (c) => {
     return c.json({ error: 'Missing urls parameter' }, 400);
   }
 
-  const urls = urlsQuery.split(',').map(u => u.trim()).filter(Boolean);
-  if (urls.length === 0) {
+  const rawUrls = urlsQuery.split(',').map(u => u.trim()).filter(Boolean);
+  if (rawUrls.length === 0) {
     return c.json({});
   }
+  // Map cleaned URL -> original, so results can be keyed back to what the caller sent
+  const cleanedToOriginal = new Map(rawUrls.map(u => [postUrlClean(u), u]));
+  const urls = [...cleanedToOriginal.keys()];
 
   try {
     // Dynamically build placeholders for SQL IN clause
     const placeholders = urls.map(() => '?').join(',');
     const query = `SELECT post_url, COUNT(*) as count FROM comments WHERE status = "approved" AND post_url IN (${placeholders}) GROUP BY post_url`;
-    
+
     const statement = c.env.DB.prepare(query);
     const { results } = await statement.bind(...urls).all();
 
-    // Create a mapping of { post_url: count }
+    // Create a mapping of { original_post_url: count }
     const counts = {};
-    urls.forEach(u => counts[u] = 0); // initialize all to 0
+    rawUrls.forEach(u => counts[u] = 0); // initialize all to 0
     results.forEach(row => {
-      counts[row.post_url] = row.count;
+      const original = cleanedToOriginal.get(row.post_url);
+      if (original !== undefined) counts[original] = row.count;
     });
 
     return c.json(counts);
