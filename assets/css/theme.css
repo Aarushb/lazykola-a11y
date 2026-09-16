@@ -84,7 +84,7 @@ article.post-micro {
     text-align: center;
     white-space: nowrap;
     vertical-align: baseline;
-    border-radius: .25rem;
+    border-radius: var(--site-radius);
     background-color: #6c757d; /* was #868e96: 3.32:1, fails WCAG AA at this size */
 }
 
@@ -141,8 +141,11 @@ article.post-micro {
 :root {
     --site-accent: #0056b3;
     --site-accent-solid: #0056b3;
-    --site-font-heading: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    --site-font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    /* Byte-for-byte Bootstrap 4.6's own $font-family-sans-serif, so that with
+       no preset active these tokens resolve to exactly the stack Bootstrap
+       already applies to <body> and the font rules below are a no-op. */
+    --site-font-heading: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --site-font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --site-radius: 0.25rem;
 }
 
@@ -150,6 +153,18 @@ article.post-micro {
     :root {
         --site-accent: #6ea8fe;
     }
+}
+
+/* Apply the font tokens. Bootstrap sets font-family only on <body>; headings
+   inherit it, so mirroring that with an explicit heading rule (whose default
+   token value is the same stack) changes nothing until a preset overrides
+   --site-font-heading. */
+body {
+    font-family: var(--site-font-body);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--site-font-heading);
 }
 
 /* Bootstrap's default link color (#007bff) is only 3.98:1 on white, below the
@@ -214,7 +229,7 @@ ul.pager li a,
 
 pre, .codetable {
     border: 1px solid #ccc;
-    border-radius: 0.25rem;
+    border-radius: var(--site-radius);
     margin-bottom: 1rem;
 }
 
@@ -223,11 +238,11 @@ pre {
 }
 
 .codetable tr:first-child td.linenos {
-    border-top-left-radius: 0.25rem;
+    border-top-left-radius: var(--site-radius);
 }
 
 .codetable tr:last-child td.linenos {
-    border-bottom-left-radius: 0.25rem;
+    border-bottom-left-radius: var(--site-radius);
 }
 
 .postindexpager {
@@ -242,7 +257,7 @@ ul.pager {
     display: flex;
     padding-left: 0;
     list-style: none;
-    border-radius: .25rem;
+    border-radius: var(--site-radius);
     padding-left: 0;
     margin: 0.5rem 0;
 }
@@ -265,7 +280,7 @@ ul.pager li a {
     margin-left: -1px;
     line-height: 1.25;
     border: 1px solid #ddd;
-    border-radius: .25rem;
+    border-radius: var(--site-radius);
 }
 
 pre.code {
@@ -291,6 +306,10 @@ html[dir="rtl"] body {
 .navbar-brand-heading {
     margin: 0;
     font-size: inherit;
+    /* Opt back out of the h1-h6 --site-font-heading rule above: this element
+       is an <h1> only for semantics, so a preset's heading typeface must not
+       restyle the navbar brand. */
+    font-family: inherit;
     line-height: inherit;
     display: inline-block;
 }
