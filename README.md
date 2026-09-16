@@ -127,6 +127,71 @@ PYGMENTS_STYLE = "monokai"
 
 ---
 
+## Design Presets
+
+Not everyone building a site with this theme can see what it looks like. Before presets, the only styling knobs were the navbar color, the background class, and the logo, which isn't much surface to make one site look meaningfully different from another, and it's not something you can use to build trust in a look you can't check yourself. A preset is a named bundle of accent color, corner rounding, spacing, and card style, picked as a set and already checked for WCAG contrast in both light and dark mode, so you can choose one by describing the kind of site you're building rather than by eye, and trust that what you get holds together.
+
+Every description below assumes the same shared shape, whatever preset you pick:
+
+> Every page in this theme has the same basic shape, whatever preset you pick: a strip across the top holds the site name and menu, like the header on a piece of letterhead. Below that, everything sits in one column down the middle, wide enough to read comfortably. Individual pieces of content, a comment, a code sample, sit in their own card, stacked one after another like a stack of index cards, each with a visible edge you could trace with a finger. What changes between presets is the shape and spacing of that same stack, and the one accent color used throughout for anything clickable.
+
+Each preset below only describes how it differs from that shared shape.
+
+### Portfolio
+*For individual creatives and professionals showcasing their own work.*
+
+The corners of every card and button are noticeably rounded, closer to a smartphone's edge than a sharp picture frame. There's generous room around each item, like artwork spaced out on a gallery wall rather than packed onto a shelf. The accent color used on every link and button is violet, a color that's carried an association with imagination and craft for a long time, part of why design studios and creative agencies reach for it. It fits someone putting their own personal work on display.
+
+### Professional Business Site
+*For companies, consultancies, and formal organizational sites.*
+
+Corners are sharp, almost square, with barely any rounding, and there's less open space between elements than in the other presets, more like a tightly formatted business letter than a spread-out brochure. Cards lose their traceable edge entirely, just a very faint shift in shade from the page around them, like a page in a notebook rather than a card pulled out of a stack. The accent color is a clear, restrained blue. Blue has become something like a default color for institutions that want to seem dependable and calm rather than exciting, which is why you'll see it used by so many banks, insurers, and established companies. It's a safe, well-tested choice for a site that needs to be taken seriously.
+
+### Personal Blog
+*For a writing-first, editorial, personality-forward site.*
+
+Headings are set in a typeface with small decorative strokes at the end of each letter, called a serif, while the rest of the text stays in a plain, unadorned typeface for easy reading. That contrast, an ornamented heading over plain body text, is the same choice newspapers and printed books have used for centuries, because it reads as considered and literary without slowing the actual reading down. The accent color is a warm, reddish orange, the color of sun-baked clay or a terracotta flowerpot. It's warm rather than corporate, which suits a site that's about one person's voice rather than an organization.
+
+### Documentation / Technical
+*For docs sites, project pages, and technical reference material.*
+
+Corners are sharp and spacing is tight, the same as the business preset, because someone reading documentation is usually scanning for one specific answer rather than settling in, and tighter spacing fits more reference material on screen. Cards have no traceable edge or shadow either, just a faint shift in shade from the page, keeping the focus on the content instead of the container. The accent color is teal, a blue-green that shows up constantly in programming tools, terminal color schemes, code editors, API documentation, because it stays calm and easy to read against both very light and very dark backgrounds, and doesn't clash with the colors already used to highlight code. It's a color chosen by developers, for developers.
+
+### Community / Nonprofit
+*For community groups, nonprofits, and volunteer-run organizations.*
+
+Corners are the roundest of any preset, and every card looks like it's gently resting on top of the page rather than painted flat onto it, similar to a coin sitting on a table rather than a pattern printed directly onto it. The accent color is green, one of the most widely recognized colors for growth, nature, and community, the same association behind a plant, a "go" traffic light, or the branding of environmental and community groups. The overall effect aims to feel like an invitation rather than a formal announcement.
+
+### Using a preset
+
+Set `PRESET` under `THEME_CONFIG` in your `conf.py`:
+
+```python
+THEME_CONFIG = {
+    DEFAULT_LANG: {
+        "PRESET": "portfolio",  # or "business", "blog", "docs", "community"
+    }
+}
+```
+
+Any other `THEME_CONFIG` key you set explicitly (`navbar_light`, `navbar_custom_bg`, etc.) still overrides whatever a preset implies, so you can start from a preset and keep customizing on top of it.
+
+### Technical reference
+
+For anyone who wants the exact values instead of the description above:
+
+| Preset | Accent (light) | Accent (dark) | Radius | Density | Card style |
+|---|---|---|---|---|---|
+| `portfolio` | `#5540d6` | `#b4a5fb` | `0.5rem` | comfortable (default) | bordered (default) |
+| `business` | `#1d4ed8` | `#93b7f9` | `0.125rem` | compact | flat |
+| `blog` | `#b8460e` | `#fb923c` | `0.375rem` | comfortable (default) | bordered (default) |
+| `docs` | `#0f766e` | `#5eead4` | `0.125rem` | compact | flat |
+| `community` | `#15803d` | `#4ade80` | `0.75rem` | comfortable (default) | shadowed |
+
+`blog` also sets `--site-font-heading` to `Georgia, 'Times New Roman', Times, serif`; every other preset keeps the theme's default sans-serif fonts for both headings and body text. All five presets clear the 4.5:1 WCAG AA contrast minimum in both light and dark mode, and as white text on their solid-fill accent color.
+
+---
+
 ## License
 This theme is open-source and licensed under the [MIT License](LICENSE).
 
