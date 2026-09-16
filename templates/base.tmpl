@@ -41,6 +41,7 @@ bg-dark
 % endif
 ">
     <div class="container"><!-- This keeps the margins nice -->
+<h1 class="navbar-brand-heading">
 <a class="navbar-brand" href="${_link("root", None, lang)}">
 %if theme_config.get('LOGO_URL'):
     <img
@@ -51,6 +52,7 @@ bg-dark
     <span id="blog-title">${blog_title|h}</span>
 % endif
 </a>
+</h1>
 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -113,6 +115,7 @@ ${base.late_load_js()}
         captions: function(element){var i=element.getElementsByTagName('img')[0];return i===undefined?'':i.alt;}});
     </script>
     <script src="/assets/js/copy.js"></script>
+    <script src="/assets/js/heading-normalize.js"></script>
 ${body_end}
 ${template_hooks['body_end']()}
 </body>

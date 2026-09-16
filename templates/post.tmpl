@@ -33,12 +33,12 @@
     <div class="e-content entry-content" itemprop="articleBody text">
     ${post.text()}
     </div>
-    <aside class="postpromonav">
-    <nav>
+    <div class="postpromonav">
+    <nav aria-label="Post tags and navigation">
     ${helper.html_tags(post)}
     ${helper.html_pager(post)}
     </nav>
-    </aside>
+    </div>
     % if not post.meta('nocomments') and site_has_comments:
         <section class="comments hidden-print">
         <h2>${messages("Comments")}</h2>

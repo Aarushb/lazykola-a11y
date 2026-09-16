@@ -85,13 +85,13 @@ article.post-micro {
     white-space: nowrap;
     vertical-align: baseline;
     border-radius: .25rem;
-    background-color: #868e96;
+    background-color: #6c757d; /* was #868e96: 3.32:1, fails WCAG AA at this size */
 }
 
 .tags > li a:hover {
     color: #fff;
     text-decoration: none;
-    background-color: #6c757d;
+    background-color: #5a6268;
 }
 
 .metadata p:before,
@@ -129,8 +129,41 @@ article.post-micro {
 /* Custom page footer */
 #footer {
     padding-top: 19px;
-    color: #777;
+    color: #767676; /* was #777: 4.48:1, fails WCAG AA by a hair */
     border-top: 1px solid #e5e5e5;
+}
+
+/* WCAG AA fixes for Bootstrap 4 defaults */
+
+/* Bootstrap's default link color (#007bff) is only 3.98:1 on white, below the
+   4.5:1 AA minimum for normal text. This darker shade is Bootstrap's own
+   a:hover color, so it stays on-brand. Applied globally and then explicitly
+   undone below for UI chrome (nav, buttons, badges, pager, brand) that isn't
+   a link embedded in running text. */
+a {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+a:hover, a:focus {
+    color: #003d82;
+}
+
+/* These are boxed/filled or clearly-navigational UI elements, not links
+   embedded in body text, so WCAG 1.4.1's "not by color alone" concern
+   doesn't apply and they keep their own existing styling untouched. */
+.navbar-brand,
+.nav-link,
+.tags > li a,
+ul.pager li a,
+.lazykola-comment-link {
+    text-decoration: none;
+}
+
+/* Bootstrap's default navbar-dark nav-link color (rgba(255,255,255,.5) on
+   #343a40) is only 4.22:1, below the 4.5:1 AA minimum. */
+.navbar-dark .navbar-nav .nav-link {
+    color: #bfc2c5;
 }
 
 /* hat tip bootstrap/html5 boilerplate */
@@ -234,4 +267,13 @@ html[dir="rtl"] body {
 /* Set a minimum logo height to ensure .svg are displayed if there is no brand text (#3493) */
 #logo {
     min-height: 25px;
+}
+
+/* The site brand is the page's real <h1>; reset it so it stays visually
+   identical to a plain .navbar-brand link -- only its semantics change. */
+.navbar-brand-heading {
+    margin: 0;
+    font-size: inherit;
+    line-height: inherit;
+    display: inline-block;
 }
