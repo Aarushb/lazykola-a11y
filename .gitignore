@@ -221,3 +221,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Local planning docs (brainstorming-skill specs) -- not part of the shipped repo
+docs/superpowers/
