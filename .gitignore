@@ -1,3 +1,8 @@
+# Node.js (lazykola-comment-server)
+node_modules/
+npm-debug.log*
+.wrangler/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
