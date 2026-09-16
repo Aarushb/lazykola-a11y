@@ -189,6 +189,29 @@
               outline: none;
             }
 
+            .lk-comment-removed {
+              font-style: italic;
+              color: var(--lk-text-muted);
+            }
+
+            .lk-expand-replies {
+              display: inline-block;
+              background: none;
+              border: none;
+              padding: 0.3rem 0;
+              margin: 0.25rem 0 1rem 0;
+              font-size: 0.85rem;
+              font-weight: 600;
+              color: var(--lk-border-focus);
+              cursor: pointer;
+              text-decoration: underline;
+            }
+
+            .lk-expand-replies:hover, .lk-expand-replies:focus {
+              color: #4338ca;
+              outline: none;
+            }
+
             /* Form Styling */
             .lk-form {
               display: flex;
@@ -387,8 +410,18 @@
                   .replace(/'/g, "&#039;");
               }
 
-              // HTML template render for comment node recursively
-              function renderCommentNode(c) {
+              // Threads deeper than this collapse behind a "Show more replies" toggle instead of nesting further
+              const VISIBLE_THREAD_DEPTH = 3;
+
+              // Total number of replies (direct + nested) under a comment node
+              function countDescendants(node) {
+                return node.children.reduce((sum, child) => sum + 1 + countDescendants(child), 0);
+              }
+
+              // HTML template render for comment node recursively. `pastCollapseBoundary` is true once
+              // a "Show more replies" toggle has already been introduced higher up this branch, so
+              // everything beneath it renders normally in one reveal instead of nesting more toggles.
+              function renderCommentNode(c, depth, pastCollapseBoundary) {
                 const date = new Date(c.created_at).toLocaleDateString(undefined, {
                   year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
                 });
@@ -402,12 +435,25 @@
 
                 let childrenHtml = '';
                 if (c.children && c.children.length > 0) {
-                  childrenHtml = `<ul class="lk-thread">${c.children.map(renderCommentNode).join('')}</ul>`;
+                  const shouldCollapse = !pastCollapseBoundary && depth >= VISIBLE_THREAD_DEPTH;
+                  const childBoundaryPassed = pastCollapseBoundary || shouldCollapse;
+                  const nestedHtml = `<ul class="lk-thread">${c.children.map(child => renderCommentNode(child, depth + 1, childBoundaryPassed)).join('')}</ul>`;
+
+                  if (shouldCollapse) {
+                    const total = countDescendants(c);
+                    const label = `Show ${total} more ${total === 1 ? 'reply' : 'replies'}`;
+                    childrenHtml = `
+                      <button type="button" class="lk-expand-replies" aria-expanded="false" aria-controls="lk-replies-${c.id}" data-show-label="${escapeHtml(label)}">${label}</button>
+                      <div id="lk-replies-${c.id}" class="lk-collapsible" hidden>${nestedHtml}</div>
+                    `;
+                  } else {
+                    childrenHtml = nestedHtml;
+                  }
                 }
 
                 return `
                   <li class="lk-comment-item">
-                    <article class="lk-comment-card" id="lk-comment-${c.id}">
+                    <article class="lk-comment-card${c.removed ? ' lk-comment-removed' : ''}" id="lk-comment-${c.id}">
                       <div class="lk-comment-header">
                         <img class="lk-avatar" src="${gravatar}" alt="" aria-hidden="true" />
                         <div class="lk-comment-meta">
@@ -433,7 +479,18 @@
                 }
 
                 const tree = buildTree(commentsData);
-                listContainer.innerHTML = `<ul class="lk-thread">${tree.map(renderCommentNode).join('')}</ul>`;
+                listContainer.innerHTML = `<ul class="lk-thread">${tree.map(node => renderCommentNode(node, 1, false)).join('')}</ul>`;
+
+                // Bind expand/collapse toggles for threads beyond VISIBLE_THREAD_DEPTH
+                listContainer.querySelectorAll('.lk-expand-replies').forEach(btn => {
+                  btn.addEventListener('click', () => {
+                    const target = document.getElementById(btn.getAttribute('aria-controls'));
+                    const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+                    target.hidden = isExpanded;
+                    btn.setAttribute('aria-expanded', String(!isExpanded));
+                    btn.textContent = isExpanded ? btn.dataset.showLabel : 'Hide replies';
+                  });
+                });
 
                 // Bind reply buttons
                 listContainer.querySelectorAll('.lk-btn-reply').forEach(btn => {
