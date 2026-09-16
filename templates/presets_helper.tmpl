@@ -6,7 +6,9 @@
 # 1. "dark_tokens" must always set "--site-accent". It is never optional. The
 #    base "tokens" accent is chosen to pass contrast on a light page; if
 #    "dark_tokens" omits it, that light-mode accent leaks into dark mode and
-#    will generally fail contrast against the dark background.
+#    will generally fail contrast against the dark background. The same
+#    applies to "--site-accent-hover": every preset below sets it in both
+#    "tokens" and "dark_tokens" for the same reason.
 #
 # 2. "--site-accent-solid" must never be set to a preset's dark-mode
 #    "--site-accent" value. It fills a button solid behind white text, so it
@@ -33,11 +35,13 @@ PRESETS = {
         ),
         "tokens": {
             "--site-accent": "#5540d6",
+            "--site-accent-hover": "#3d2e9a",
             "--site-accent-solid": "#5540d6",
             "--site-radius": "0.5rem",
         },
         "dark_tokens": {
             "--site-accent": "#b4a5fb",
+            "--site-accent-hover": "#cdc3fc",
         },
         "attrs": {},
     },
@@ -63,11 +67,13 @@ PRESETS = {
         ),
         "tokens": {
             "--site-accent": "#1d4ed8",
+            "--site-accent-hover": "#15389c",
             "--site-accent-solid": "#1d4ed8",
             "--site-radius": "0.125rem",
         },
         "dark_tokens": {
             "--site-accent": "#93b7f9",
+            "--site-accent-hover": "#b7cffb",
         },
         "attrs": {
             "data-density": "compact",
@@ -94,12 +100,14 @@ PRESETS = {
         ),
         "tokens": {
             "--site-accent": "#b8460e",
+            "--site-accent-hover": "#84320a",
             "--site-accent-solid": "#b8460e",
             "--site-radius": "0.375rem",
             "--site-font-heading": "Georgia, 'Times New Roman', Times, serif",
         },
         "dark_tokens": {
             "--site-accent": "#fb923c",
+            "--site-accent-hover": "#fcb67c",
         },
         "attrs": {},
     },
@@ -125,11 +133,13 @@ PRESETS = {
         ),
         "tokens": {
             "--site-accent": "#0f766e",
+            "--site-accent-hover": "#0b554f",
             "--site-accent-solid": "#0f766e",
             "--site-radius": "0.125rem",
         },
         "dark_tokens": {
             "--site-accent": "#5eead4",
+            "--site-accent-hover": "#93f1e2",
         },
         "attrs": {
             "data-density": "compact",
@@ -154,11 +164,13 @@ PRESETS = {
         ),
         "tokens": {
             "--site-accent": "#15803d",
+            "--site-accent-hover": "#0f5c2c",
             "--site-accent-solid": "#15803d",
             "--site-radius": "0.75rem",
         },
         "dark_tokens": {
             "--site-accent": "#4ade80",
+            "--site-accent-hover": "#86e9aa",
         },
         "attrs": {
             "data-card-style": "shadowed",

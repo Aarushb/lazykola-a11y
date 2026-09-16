@@ -153,6 +153,7 @@ article.post-micro h6 {
    to before these tokens existed. */
 :root {
     --site-accent: #0056b3;
+    --site-accent-hover: #003d82;
     --site-accent-solid: #0056b3;
     /* Byte-for-byte Bootstrap 4.6's own $font-family-sans-serif, so that with
        no preset active these tokens resolve to exactly the stack Bootstrap
@@ -165,6 +166,7 @@ article.post-micro h6 {
 @media (prefers-color-scheme: dark) {
     :root {
         --site-accent: #6ea8fe;
+        --site-accent-hover: #9ec5fe;
     }
 }
 
@@ -191,7 +193,7 @@ a {
 }
 
 a:hover, a:focus {
-    color: #003d82;
+    color: var(--site-accent-hover);
 }
 
 /* These are boxed/filled or clearly-navigational UI elements, not links
@@ -349,10 +351,6 @@ html[dir="rtl"] body {
 
     a {
         color: var(--site-accent);
-    }
-
-    a:hover, a:focus {
-        color: #9ec5fe;
     }
 
     #footer {
