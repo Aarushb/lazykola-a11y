@@ -1,5 +1,19 @@
 ## -*- coding: utf-8 -*-
 <%!
+# Invariants every preset entry must honor -- both are contrast requirements
+# that the token system cannot enforce for you:
+#
+# 1. "dark_tokens" must always set "--site-accent". It is never optional. The
+#    base "tokens" accent is chosen to pass contrast on a light page; if
+#    "dark_tokens" omits it, that light-mode accent leaks into dark mode and
+#    will generally fail contrast against the dark background.
+#
+# 2. "--site-accent-solid" must never be set to a preset's dark-mode
+#    "--site-accent" value. It fills a button solid behind white text, so it
+#    sits on neither side of the light/dark boundary and is deliberately not
+#    overridden in dark mode -- it has to stay dark enough for white text at
+#    all times. Every preset below sets it to the same light-mode-safe value
+#    as its base "--site-accent"; follow that pattern.
 PRESETS = {
     "portfolio": {
         "label": "Portfolio",

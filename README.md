@@ -52,6 +52,9 @@ So, I built an out-of-the-box (or dirty hack, depending on the perspective) syst
 - **Accessible by Default**: The button is a real, keyboard-focusable `<button>` with an `aria-label="Copy code to clipboard"`, and its text changes to "Copied!" (with a distinct visual style) for a couple of seconds after use to confirm the action for sighted and screen-reader users alike.
 - **Zero Configuration**: Ships as a small, dependency-free `copy.js`/`copy.css` pair that's automatically included by the theme; no setup required.
 
+### 6. Design Presets
+- **One-Line Restyling**: A single `"PRESET"` key in `THEME_CONFIG` swaps the accent color, corner rounding, spacing, heading typeface, and card style as one coordinated set, each pre-checked for WCAG AA contrast in both light and dark mode. Five presets ship with the theme, described in plain language so you can pick one without needing to see it — see [Design Presets](#design-presets) below.
+
 ## Installation
 
 Don't have a Nikola site yet? The fastest way to get one is with [uv](https://docs.astral.sh/uv/) (a fast Python package/environment manager):
@@ -115,6 +118,11 @@ THEME_CONFIG = {
 
         # Optional: Cloudflare Turnstile site key for comments form validation
         "comment_turnstile_site_key": "your-turnstile-site-key",
+
+        # Optional: a named design preset (accent color, corner rounding, spacing,
+        # heading typeface, card style) — see "Design Presets" below for the five
+        # available names and what each one looks like
+        "PRESET": "blog",
     }
 }
 ```
