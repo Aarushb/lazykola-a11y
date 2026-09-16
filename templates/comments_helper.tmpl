@@ -73,7 +73,7 @@
                  --lk-accent-solid instead, since that's a different contrast
                  pairing (white-on-fill, not accent-on-page) with its own
                  requirement that doesn't change between light and dark. */
-              --lk-border-focus: #4f46e5;
+              --lk-border-focus: var(--site-accent, #4f46e5);
               --lk-accent-hover: #4338ca;
               --lk-accent-solid: #4f46e5;
               --lk-accent-solid-hover: #4338ca;
@@ -87,7 +87,7 @@
                hits 3.67:1, below the 4.5:1 AA minimum for muted text. */
             @media (prefers-color-scheme: dark) {
               :root {
-                --lk-border-focus: #818cf8;
+                --lk-border-focus: var(--site-accent, #818cf8);
                 --lk-accent-hover: #a5b4fc;
                 --lk-text-muted: #9ca3af;
               }
