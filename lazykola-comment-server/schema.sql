@@ -17,3 +17,13 @@ CREATE INDEX IF NOT EXISTS idx_comments_post_url ON comments (post_url);
 
 -- Index for moderation dashboard filtering by status
 CREATE INDEX IF NOT EXISTS idx_comments_status ON comments (status);
+
+-- Submission log used purely for rate limiting (not linked to comment content)
+CREATE TABLE IF NOT EXISTS rate_limits (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  ip TEXT NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Index for fast rate-limit window lookups by IP
+CREATE INDEX IF NOT EXISTS idx_rate_limits_ip_time ON rate_limits (ip, created_at);

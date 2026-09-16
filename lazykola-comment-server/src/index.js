@@ -5,6 +5,11 @@ import { adminHtml } from './admin_html.js';
 
 const app = new Hono();
 
+// Spam mitigation tuning
+const RATE_LIMIT_MAX_SUBMISSIONS = 5;
+const RATE_LIMIT_WINDOW_MINUTES = 10;
+const MAX_REPLY_DEPTH = 3;
+
 // Enable CORS for all origins since it's a public comments API
 // We'll configure CORS options specifically to allow POST and GET
 app.use('*', cors({
@@ -121,7 +126,17 @@ app.post('/comments', async (c) => {
       return c.json({ error: 'Input exceeds maximum length' }, 400);
     }
 
-    // 3. Turnstile spam protection check (if secret key is set)
+    // 3. Rate limiting (per-IP submission cap)
+    const clientIp = c.req.header('CF-Connecting-IP') || 'unknown';
+    const { results: rateRows } = await c.env.DB.prepare(
+      `SELECT COUNT(*) as count FROM rate_limits WHERE ip = ? AND created_at > datetime('now', '-${RATE_LIMIT_WINDOW_MINUTES} minutes')`
+    ).bind(clientIp).all();
+
+    if (rateRows[0].count >= RATE_LIMIT_MAX_SUBMISSIONS) {
+      return c.json({ error: 'Too many comments submitted recently. Please try again later.' }, 429);
+    }
+
+    // 4. Turnstile spam protection check (if secret key is set)
     if (c.env.TURNSTILE_SECRET_KEY) {
       if (!turnstile_token) {
         return c.json({ error: 'Missing security token' }, 400);
@@ -139,20 +154,25 @@ app.post('/comments', async (c) => {
       }
     }
 
-    // 4. Set comment status based on config
+    // 5. Set comment status based on config
     const status = c.env.AUTO_APPROVE === 'true' ? 'approved' : 'pending';
 
-    // 5. Insert comment
+    // 6. Resolve reply nesting depth (flattens replies beyond MAX_REPLY_DEPTH onto the deepest allowed ancestor)
+    const resolvedParentId = await resolveReplyParent(c.env.DB, parent_id || null);
+
+    // 7. Insert comment
     const emailStr = author_email ? author_email.trim() : '';
     const websiteStr = author_website ? author_website.trim() : '';
-    
+
     const insertRes = await c.env.DB.prepare(
       'INSERT INTO comments (post_url, author_name, author_email, author_website, content, parent_id, status) VALUES (?, ?, ?, ?, ?, ?, ?)'
     )
-    .bind(postUrlClean(post_url), author_name.trim(), emailStr, websiteStr, content.trim(), parent_id || null, status)
+    .bind(postUrlClean(post_url), author_name.trim(), emailStr, websiteStr, content.trim(), resolvedParentId, status)
     .run();
 
-    // 6. Send Discord Notification if Webhook is set and it needs moderation
+    // 8. Record this submission for rate limiting, then send Discord notification if needed
+    await c.env.DB.prepare('INSERT INTO rate_limits (ip) VALUES (?)').bind(clientIp).run();
+
     if (c.env.DISCORD_WEBHOOK_URL && status === 'pending') {
       c.executionCtx.waitUntil(
         sendDiscordAlert(c.env.DISCORD_WEBHOOK_URL, {
@@ -171,6 +191,34 @@ app.post('/comments', async (c) => {
     return c.json({ error: 'Server error', details: err.message }, 500);
   }
 });
+
+// Resolves the actual parent_id a new reply should attach to, capping nesting
+// at MAX_REPLY_DEPTH by flattening deeper replies onto the deepest allowed ancestor.
+async function resolveReplyParent(db, requestedParentId) {
+  if (!requestedParentId) return null;
+
+  const { results } = await db.prepare(`
+    WITH RECURSIVE chain(id, parent_id, depth) AS (
+      SELECT id, parent_id, 1 FROM comments WHERE id = ?
+      UNION ALL
+      SELECT p.id, p.parent_id, chain.depth + 1
+      FROM comments p
+      INNER JOIN chain ON p.id = chain.parent_id
+    )
+    SELECT id, depth FROM chain ORDER BY depth ASC
+  `).bind(requestedParentId).all();
+
+  if (results.length === 0) return null; // requested parent doesn't exist; fall back to top-level
+
+  const targetDepth = results[results.length - 1].depth; // real depth of the requested parent, root = 1
+  if (targetDepth < MAX_REPLY_DEPTH) {
+    return requestedParentId; // normal nesting, still within the allowed depth
+  }
+
+  // Already at (or somehow beyond) the cap: attach as a sibling under the deepest allowed ancestor instead
+  const capAncestor = results.find(r => r.depth === MAX_REPLY_DEPTH - 1);
+  return capAncestor ? capAncestor.id : null;
+}
 
 // Helper to normalize URLs (strip query params, trailing slashes, etc.)
 function postUrlClean(url) {
