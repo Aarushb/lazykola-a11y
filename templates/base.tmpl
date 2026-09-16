@@ -6,6 +6,20 @@ ${base.html_headstart()}
 
 <%block name="extra_head">
 <link rel="stylesheet" href="/assets/css/copy.css">
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll('.client-local-time').forEach(el => {
+                const iso = el.getAttribute('data-date');
+                const date = new Date(iso);
+                el.textContent = ' (' + date.toLocaleTimeString(undefined, {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    timeZoneName: 'short'
+                }) + ')';
+            });
+        });
+    </script>
+</%block>
 <%
 preset_key = theme_config.get('PRESET')
 preset = presets.module.PRESETS.get(preset_key) if preset_key else None
@@ -28,25 +42,9 @@ preset = presets.module.PRESETS.get(preset_key) if preset_key else None
 % endif
 </style>
 % endif
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            document.querySelectorAll('.client-local-time').forEach(el => {
-                const iso = el.getAttribute('data-date');
-                const date = new Date(iso);
-                el.textContent = ' (' + date.toLocaleTimeString(undefined, {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    timeZoneName: 'short'
-                }) + ')';
-            });
-        });
-    </script>
-</%block>
 ${template_hooks['extra_head']()}
 </head>
 <%
-preset_key = theme_config.get('PRESET')
-preset = presets.module.PRESETS.get(preset_key) if preset_key else None
 body_attrs = ''.join(' %s="%s"' % (k, v) for k, v in preset['attrs'].items()) if preset else ''
 %>
 <body${body_attrs|n}>
