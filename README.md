@@ -17,7 +17,9 @@ I also blessedly, did not have to do this from the ground up. Thanks to [Carter 
 ### 1. Accessibility (A11y) Improvements
 - **Proper Current Page Indicators**: Replaces the generic active class markup with `aria-current="page"` on menu links and dropdown items allowing screen readers to accurately identify the active page. Bootstrap4 had hardcoded the word "active", not sure why the workaround when there is a perfectly viable [WCAG](https://www.w3.org/WAI/standards-guidelines/wcag/) solution.
 - **Removed Heading Self-Links**: Strips the redundant `<a>` anchor link from post/page title headings when viewing that specific post or page. I don't know how this looked visually (I can't personally imagine what purpose it would serve to link to the page you are already on, but at least from a screen reader perspective it was very annoying to hear "link same page").
-- **Corrected Heading Hierarchy**: Post/page title headings are now rendered as `<h2>` instead of `<h1>`, so they nest properly under the page's own top-level landmark structure instead of competing with it. This keeps the outline sane for screen reader users who navigate by heading level.
+- **Corrected Heading Hierarchy**: The site's own name/logo in the navbar is the page's real `<h1>`; post/page titles render as `<h2>` underneath it. A small client-side script then auto-normalizes each post's own content headings so the shallowest one always lands at `<h3>` — regardless of whether you start writing a post at `#`, `##`, or anywhere else, it always nests correctly under the title with no gaps in the outline. You never have to think about what heading level to start at.
+- **WCAG AA Color Contrast**: Audited the full theme (and the comment widget) with an automated accessibility scanner and fixed every contrast failure inherited from Bootstrap 4's defaults — nav links, body links, tag badges, and footer text all now meet the 4.5:1 minimum. Links inside body text are also underlined by default, not distinguished by color alone.
+- **Automatic Dark Mode**: The whole theme, including the comment widget, follows the visitor's OS/browser dark-mode preference (`prefers-color-scheme`) automatically — no toggle, no configuration. (Code blocks intentionally keep their light syntax-highlighting theme; see [Configuration Options](#configuration-options) if you'd like a dark-friendly Pygments style instead.)
 - **Smart Logo Alt Text**: Adds support for custom theme-specific logo alternative text (`LOGO_ALT_TEXT`). Previously, Nikola hardcoded the logo's alt text to fall back to the site title (`alt="${blog_title}"`).
   - *Before*: Screen reader reads: `"My Awesome Website!"` (just site title)
   - *Now*: Screen reader reads: `"My Awesome Website Logo: Me bent over a terminal with a lukewarm coffee sitting on the desk for the past six hours..."`
@@ -105,6 +107,12 @@ THEME_CONFIG = {
         "comment_turnstile_site_key": "your-turnstile-site-key",
     }
 }
+```
+
+Code blocks keep Nikola's default light syntax-highlighting theme even in dark mode, so copied/pasted code always looks the same regardless of the reader's OS setting. If you'd rather your code blocks match dark mode, set a dark-friendly [Pygments style](https://pygments.org/styles/) in `conf.py`, e.g.:
+
+```python
+PYGMENTS_STYLE = "monokai"
 ```
 
 ---
