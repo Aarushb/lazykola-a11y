@@ -64,7 +64,7 @@
             </a>
             </p>
             % if not post.meta('nocomments') and site_has_comments:
-                <p class="commentline">${comments.comment_link(post.permalink(), post._base_path)}
+                <p class="commentline">${comments.comment_link(post.permalink(absolute=True), post._base_path)}
             % endif
             ${html_sourcelink()}
             % if post.meta('link'):
