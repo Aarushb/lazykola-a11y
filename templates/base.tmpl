@@ -1,10 +1,33 @@
 ## -*- coding: utf-8 -*-
 <%namespace name="base" file="base_helper.tmpl" import="*" />
+<%namespace name="presets" file="presets_helper.tmpl"/>
 ${set_locale(lang)}
 ${base.html_headstart()}
 
 <%block name="extra_head">
 <link rel="stylesheet" href="/assets/css/copy.css">
+<%
+preset_key = theme_config.get('PRESET')
+preset = presets.module.PRESETS.get(preset_key) if preset_key else None
+%>
+% if preset:
+<style>
+:root {
+% for prop, val in preset['tokens'].items():
+  ${prop}: ${val};
+% endfor
+}
+% if preset.get('dark_tokens'):
+@media (prefers-color-scheme: dark) {
+  :root {
+  % for prop, val in preset['dark_tokens'].items():
+    ${prop}: ${val};
+  % endfor
+  }
+}
+% endif
+</style>
+% endif
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             document.querySelectorAll('.client-local-time').forEach(el => {
@@ -21,7 +44,12 @@ ${base.html_headstart()}
 </%block>
 ${template_hooks['extra_head']()}
 </head>
-<body>
+<%
+preset_key = theme_config.get('PRESET')
+preset = presets.module.PRESETS.get(preset_key) if preset_key else None
+body_attrs = ''.join(' %s="%s"' % (k, v) for k, v in preset['attrs'].items()) if preset else ''
+%>
+<body${body_attrs|n}>
 <a href="#content" class="sr-only sr-only-focusable">${messages("Skip to main content")}</a>
 
 <!-- Menubar -->
