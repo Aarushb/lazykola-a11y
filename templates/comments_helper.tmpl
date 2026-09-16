@@ -328,6 +328,7 @@
         <script>
             (function() {
               const workerUrl = "${comment_system_id}";
+              <%text>
               const postUrl = window.location.href.split('?')[0].split('#')[0];
               const form = document.getElementById('lazykola-comment-form');
               const messageEl = document.getElementById('lk-form-message');
@@ -349,12 +350,12 @@
               async function fetchComments() {
                 const listContainer = document.getElementById('lazykola-comments-list');
                 try {
-                  const res = await fetch(\`\${workerUrl}/comments?post_url=\${encodeURIComponent(postUrl)}\`);
+                  const res = await fetch(`${workerUrl}/comments?post_url=${encodeURIComponent(postUrl)}`);
                   if (!res.ok) throw new Error('Could not retrieve comments');
                   commentsData = await res.json();
                   renderComments();
                 } catch (e) {
-                  listContainer.innerHTML = \`<p class="lk-loading" style="color: var(--lk-error);">Error: Failed to load comments.</p>\`;
+                  listContainer.innerHTML = `<p class="lk-loading" style="color: var(--lk-error);">Error: Failed to load comments.</p>`;
                 }
               }
 
@@ -391,48 +392,48 @@
                 const date = new Date(c.created_at).toLocaleDateString(undefined, {
                   year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
                 });
-                const gravatar = c.gravatar_hash 
-                  ? \`https://www.gravatar.com/avatar/\${c.gravatar_hash}?d=mp&s=88\`
+                const gravatar = c.gravatar_hash
+                  ? `https://www.gravatar.com/avatar/${c.gravatar_hash}?d=mp&s=88`
                   : 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&s=88';
 
-                const authorLink = c.author_website 
-                  ? \`<a class="lk-comment-author" href="\${escapeHtml(c.author_website)}" target="_blank" rel="noopener noreferrer">\${escapeHtml(c.author_name)}</a>\`
-                  : \`<span class="lk-comment-author">\${escapeHtml(c.author_name)}</span>\`;
+                const authorLink = c.author_website
+                  ? `<a class="lk-comment-author" href="${escapeHtml(c.author_website)}" target="_blank" rel="noopener noreferrer">${escapeHtml(c.author_name)}</a>`
+                  : `<span class="lk-comment-author">${escapeHtml(c.author_name)}</span>`;
 
                 let childrenHtml = '';
                 if (c.children && c.children.length > 0) {
-                  childrenHtml = \`<ul class="lk-thread">\${c.children.map(renderCommentNode).join('')}</ul>\`;
+                  childrenHtml = `<ul class="lk-thread">${c.children.map(renderCommentNode).join('')}</ul>`;
                 }
 
-                return \`
+                return `
                   <li class="lk-comment-item">
-                    <article class="lk-comment-card" id="lk-comment-\${c.id}">
+                    <article class="lk-comment-card" id="lk-comment-${c.id}">
                       <div class="lk-comment-header">
-                        <img class="lk-avatar" src="\${gravatar}" alt="" aria-hidden="true" />
+                        <img class="lk-avatar" src="${gravatar}" alt="" aria-hidden="true" />
                         <div class="lk-comment-meta">
-                          \${authorLink}
-                          <time class="lk-comment-time" datetime="\${c.created_at}">\${date}</time>
+                          ${authorLink}
+                          <time class="lk-comment-time" datetime="${c.created_at}">${date}</time>
                         </div>
                       </div>
-                      <div class="lk-comment-body">\${escapeHtml(c.content)}</div>
+                      <div class="lk-comment-body">${escapeHtml(c.content)}</div>
                       <div class="lk-comment-actions">
-                        <button type="button" class="lk-btn-reply" data-id="\${c.id}" data-author="\${escapeHtml(c.author_name)}">Reply</button>
+                        <button type="button" class="lk-btn-reply" data-id="${c.id}" data-author="${escapeHtml(c.author_name)}">Reply</button>
                       </div>
                     </article>
-                    \${childrenHtml}
+                    ${childrenHtml}
                   </li>
-                \`;
+                `;
               }
 
               function renderComments() {
                 const listContainer = document.getElementById('lazykola-comments-list');
                 if (commentsData.length === 0) {
-                  listContainer.innerHTML = \`<p class="lk-loading">No comments yet. Be the first to share your thoughts!</p>\`;
+                  listContainer.innerHTML = `<p class="lk-loading">No comments yet. Be the first to share your thoughts!</p>`;
                   return;
                 }
 
                 const tree = buildTree(commentsData);
-                listContainer.innerHTML = \`<ul class="lk-thread">\${tree.map(renderCommentNode).join('')}</ul>\`;
+                listContainer.innerHTML = `<ul class="lk-thread">${tree.map(renderCommentNode).join('')}</ul>`;
 
                 // Bind reply buttons
                 listContainer.querySelectorAll('.lk-btn-reply').forEach(btn => {
@@ -447,13 +448,13 @@
               // Set Form to reply mode
               function setReplyTo(id, authorName) {
                 parentIdInput.value = id;
-                replyHeading.textContent = \`Reply to \${authorName}\`;
+                replyHeading.textContent = `Reply to ${authorName}`;
                 cancelReplyBtn.style.display = 'inline-block';
-                announcer.textContent = \`Replying to \${authorName}\`;
-                
+                announcer.textContent = `Replying to ${authorName}`;
+
                 // Focus comment text area
                 document.getElementById('lk-comment').focus();
-                
+
                 // Smooth scroll to form
                 document.getElementById('lazykola-comment-form-container').scrollIntoView({ behavior: 'smooth' });
               }
@@ -490,7 +491,7 @@
                 submitBtn.textContent = 'Submitting...';
 
                 try {
-                  const res = await fetch(\`\${workerUrl}/comments\`, {
+                  const res = await fetch(`${workerUrl}/comments`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -544,6 +545,7 @@
               // Run fetch comments
               fetchComments();
             })();
+              </%text>
         </script>
     % endif
 </%def>
@@ -561,6 +563,7 @@
         <script>
             (function() {
               const workerUrl = "${comment_system_id}";
+              <%text>
               const links = document.querySelectorAll('.lazykola-comment-link');
               if (links.length === 0) return;
 
@@ -575,7 +578,7 @@
 
               async function fetchCounts() {
                 try {
-                  const res = await fetch(\`\${workerUrl}/comments/count?urls=\${encodeURIComponent(urls.join(','))}\`);
+                  const res = await fetch(`${workerUrl}/comments/count?urls=${encodeURIComponent(urls.join(','))}`);
                   if (!res.ok) return;
                   const data = await res.json();
                   links.forEach(l => {
@@ -589,7 +592,7 @@
                     } else if (count === 1) {
                       l.textContent = '1 Comment';
                     } else {
-                      l.textContent = \`\${count} Comments\`;
+                      l.textContent = `${count} Comments`;
                     }
                   });
                 } catch (e) {
@@ -599,6 +602,7 @@
 
               fetchCounts();
             })();
+              </%text>
         </script>
     % endif
 </%def>
