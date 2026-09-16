@@ -54,6 +54,16 @@ So, I built an out-of-the-box (or dirty hack, depending on the perspective) syst
 
 ## Installation
 
+Don't have a Nikola site yet? The fastest way to get one is with [uv](https://docs.astral.sh/uv/) (a fast Python package/environment manager):
+
+```bash
+uv venv
+uv pip install "Nikola[extras]"
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+nikola init mysite
+cd mysite
+```
+
 To use this theme in your Nikola website:
 
 1. Clone or copy this repository into your website's `themes/` directory under the name `lazykola-a11y`:
