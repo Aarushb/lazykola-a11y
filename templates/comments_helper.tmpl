@@ -75,16 +75,21 @@
                  requirement that doesn't change between light and dark. */
               --lk-border-focus: var(--site-accent, #4f46e5);
               --lk-accent-hover: #4338ca;
-              --lk-accent-solid: #4f46e5;
+              --lk-accent-solid: var(--site-accent-solid, #4f46e5);
               --lk-accent-solid-hover: #4338ca;
               --lk-text-muted: #6b7280;
               --lk-success: #10b981;
               --lk-error: #ef4444;
             }
 
-            /* #4f46e5 only hits 2.98:1 as text/outline on a dark page
-               background, below the 3:1 AA minimum; #6b7280 similarly only
-               hits 3.67:1, below the 4.5:1 AA minimum for muted text. */
+            /* Dark-mode contrast corrections for the two literal colors below:
+               the light-mode --lk-accent-hover (#4338ca) only hits 2.37:1 as
+               text on the #121212 dark page background and --lk-text-muted
+               (#6b7280) only 3.88:1, both under the 4.5:1 AA minimum.
+               --lk-border-focus needs no correction of its own -- it resolves
+               to --site-accent, which already carries a dark-mode value in
+               theme.css; only its standalone fallback is restated here, for
+               the case where theme.css isn't present. */
             @media (prefers-color-scheme: dark) {
               :root {
                 --lk-border-focus: var(--site-accent, #818cf8);
@@ -308,7 +313,12 @@
             .lk-form-group input:focus, .lk-form-group textarea:focus {
               outline: none;
               border-color: var(--lk-border-focus);
+              /* Two declarations on purpose: the second wins where color-mix()
+                 is supported (so the focus glow follows the active accent),
+                 and is dropped as an invalid value everywhere else, leaving
+                 the static indigo glow from the first declaration in place. */
               box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+              box-shadow: 0 0 0 3px color-mix(in srgb, var(--lk-border-focus) 15%, transparent);
             }
 
             .lk-form-actions {
@@ -330,8 +340,15 @@
               border: none;
             }
 
+            /* Same two-declaration pattern as the focus glow above: the static
+               indigo hover is the fallback, and where color-mix() is supported
+               the hover shade is derived from whatever --lk-accent-solid
+               currently is, so a preset's button doesn't turn indigo on hover.
+               Mixing toward black only ever darkens it, so the white button
+               label's contrast can only improve over the base fill. */
             #lk-submit-btn:hover, #lk-submit-btn:focus {
               background-color: var(--lk-accent-solid-hover);
+              background-color: color-mix(in srgb, var(--lk-accent-solid) 82%, black);
             }
 
             #lk-submit-btn:focus {
