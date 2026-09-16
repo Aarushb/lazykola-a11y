@@ -342,14 +342,15 @@ html[dir="rtl"] body {
 }
 
 /* Design-preset density and card-style overrides. Both are no-ops unless
-   a preset (Task 3+) sets the matching data-* attribute on <body>. Scoped
-   to the theme's own custom surfaces only -- not a full Bootstrap retheme. */
+   a preset sets the matching data-* attribute on <body>. Scoped to the
+   theme's own custom surfaces only -- not a full Bootstrap retheme. */
 [data-density="compact"] .lk-comment-card {
     padding: 0.85rem;
 }
 
-[data-density="compact"] pre,
-[data-density="compact"] .codetable {
+/* .codetable is deliberately not listed here: it has no padding of its own in
+   the normal density, so naming it would *add* padding rather than reduce it. */
+[data-density="compact"] pre {
     padding: 0.5rem;
 }
 
