@@ -26,7 +26,13 @@ Open a terminal in this directory (`lazykola-comment-server`) and run:
 node setup.js
 ```
 
-It installs dependencies, creates the D1 database, writes its id into `wrangler.toml`, pushes the schema, asks you (directly, via Wrangler's own prompt, this script never sees or stores it) for an admin dashboard password, deploys the Worker, and prints the exact `conf.py` snippet to paste in with your real deployed URL already filled in. If anything fails partway through, it stops and tells you what to fix; it's safe to just re-run afterward.
+It installs dependencies, creates the D1 database, writes its id into `wrangler.toml`, pushes the schema, asks you (directly, via Wrangler's own prompt, this script never sees or stores it) for an admin dashboard password, deploys the Worker, and prints the exact `conf.py` snippet to paste in with your real deployed URL already filled in. If anything fails partway through, it stops and tells you what to fix; it's safe to just re-run afterward, it detects the database already exists and skips straight past creating it.
+
+Not ready to go live yet? Run it with `--skip-deploy` instead:
+```bash
+node setup.js --skip-deploy
+```
+That sets up the database and admin password but skips the public deploy, so you can test locally first with `npm run dev` (serves at `http://localhost:8787`). When you're ready, run `npm run deploy` and copy the URL it prints into `conf.py`.
 
 <details>
 <summary>Step by step, if you'd rather run it manually or understand each part</summary>
