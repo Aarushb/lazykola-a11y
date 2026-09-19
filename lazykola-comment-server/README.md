@@ -26,7 +26,9 @@ Open a terminal in this directory (`lazykola-comment-server`) and run:
 node setup.js
 ```
 
-It installs dependencies, creates the D1 database, writes its id into `wrangler.toml`, pushes the schema, asks you (directly, via Wrangler's own prompt, this script never sees or stores it) for an admin dashboard password, deploys the Worker, and prints the exact `conf.py` snippet to paste in with your real deployed URL already filled in. If anything fails partway through, it stops and tells you what to fix; it's safe to just re-run afterward, it detects the database already exists and skips straight past creating it.
+It starts by asking a handful of yes/no questions about optional extras (Turnstile, Discord alerts, auto-approve, hard-delete), say no to skip any of them, nothing happens if you do. Then it installs dependencies, creates the D1 database, writes its id into `wrangler.toml`, pushes the schema, asks you (directly, via Wrangler's own prompt, this script never sees or stores it) for an admin dashboard password, applies whichever extras you said yes to, deploys the Worker, and adds `COMMENT_SYSTEM`/`COMMENT_SYSTEM_ID` straight into your Nikola site's `conf.py` if it can find one (three directories up, where it ends up once the theme's installed into `themes/lazykola-a11y/`), or prints the snippet for you to paste in if it can't. If anything fails partway through, it stops and tells you what to fix; it's safe to just re-run afterward, it detects the database already exists and skips straight past creating it.
+
+Saying yes to Turnstile gets you most of the way there automatically (the secret key goes straight into Wrangler), but the site key has to go inside your existing `THEME_CONFIG` dict in `conf.py`, not a new top-level line, so the script prints that one for you to paste in by hand rather than risk corrupting a dict it can't safely parse.
 
 Not ready to go live yet? Run it with `--skip-deploy` instead:
 ```bash
