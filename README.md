@@ -68,23 +68,39 @@ uv pip install "Nikola[extras]"
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
 nikola init mysite
 cd mysite
+git clone https://github.com/Aarushb/lazykola-a11y.git themes/lazykola-a11y
 ```
 
-To use this theme in your Nikola website:
+Then open `conf.py`, set `THEME = "lazykola-a11y"`, and run `nikola build`.
 
-1. Clone or copy this repository into your website's `themes/` directory under the name `lazykola-a11y`:
+Already have a Nikola site? Skip straight to the clone step: drop the repo into your `themes/` folder, set `THEME` in `conf.py`, and build.
+
+<details>
+<summary>Step by step, if you'd rather understand each part</summary>
+
+1. Set up a Nikola site (skip this if you already have one):
    ```bash
-   git clone https://github.com/aarushb/lazykola-a11y.git themes/lazykola-a11y
+   uv venv
+   uv pip install "Nikola[extras]"
+   source .venv/bin/activate  # Windows: .venv\Scripts\activate
+   nikola init mysite
+   cd mysite
    ```
-2. Open your website's `conf.py` configuration file.
-3. Update or set the `THEME` variable:
+2. Clone or copy this repository into your website's `themes/` directory under the name `lazykola-a11y`:
+   ```bash
+   git clone https://github.com/Aarushb/lazykola-a11y.git themes/lazykola-a11y
+   ```
+3. Open your website's `conf.py` configuration file.
+4. Update or set the `THEME` variable:
    ```python
    THEME = "lazykola-a11y"
    ```
-4. Build and deploy your website as usual:
+5. Build and deploy your website as usual:
    ```bash
    nikola build
    ```
+
+</details>
 
 ---
 
