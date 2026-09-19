@@ -55,6 +55,8 @@ So, I built an out-of-the-box (or dirty hack, depending on the perspective) syst
 ### 6. Design Presets
 - **One-Line Restyling**: A single `"PRESET"` key in `THEME_CONFIG` swaps the accent color, corner rounding, spacing, heading typeface, and card style as one coordinated set, each pre-checked for WCAG AA contrast in both light and dark mode. Five presets ship with the theme, described in plain language so you can pick one without needing to see it — see [Design Presets](#design-presets) below.
 
+Used by developers building portfolio sites, blogs, and more. See [who's using it](#sites-using-this-theme).
+
 ## Installation
 
 Don't have a Nikola site yet? The fastest way to get one is with [uv](https://docs.astral.sh/uv/) (a fast Python package/environment manager):
@@ -197,6 +199,16 @@ For anyone who wants the exact values instead of the description above:
 | `community` | `#15803d` | `#4ade80` | `0.75rem` | comfortable (default) | shadowed |
 
 `blog` also sets `--site-font-heading` to `Georgia, 'Times New Roman', Times, serif`; every other preset keeps the theme's default sans-serif fonts for both headings and body text. All five presets clear the 4.5:1 WCAG AA contrast minimum in both light and dark mode, and as white text on their solid-fill accent color.
+
+---
+
+## Sites Using This Theme
+
+If you've built a site with this theme, I'd genuinely like to see it. Part of what motivates me to get up in the morning is being able to make the lives of other people just a little bit better, so if this has helped you, please share, it would make my day to hear. Plus, potential users will hear it from people other than myself if the theme is any good.
+
+Open a PR adding a link to your site (and, if you want, what preset you used) to the list below.
+
+- [aarushb.github.io](https://aarushb.github.io): portfolio preset
 
 ---
 
