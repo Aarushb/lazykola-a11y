@@ -17,9 +17,9 @@ I also blessedly, did not have to do this from the ground up. Thanks to [Carter 
 ### 1. Accessibility (A11y) Improvements
 - **Proper Current Page Indicators**: Replaces the generic active class markup with `aria-current="page"` on menu links and dropdown items allowing screen readers to accurately identify the active page. Bootstrap4 had hardcoded the word "active", not sure why the workaround when there is a perfectly viable [WCAG](https://www.w3.org/WAI/standards-guidelines/wcag/) solution.
 - **Removed Heading Self-Links**: Strips the redundant `<a>` anchor link from post/page title headings when viewing that specific post or page. I don't know how this looked visually (I can't personally imagine what purpose it would serve to link to the page you are already on, but at least from a screen reader perspective it was very annoying to hear "link same page").
-- **Corrected Heading Hierarchy**: The site's own name/logo in the navbar is the page's real `<h1>`; post/page titles render as `<h2>` underneath it. A small client-side script then auto-normalizes each post's own content headings so the shallowest one always lands at `<h3>` — regardless of whether you start writing a post at `#`, `##`, or anywhere else, it always nests correctly under the title with no gaps in the outline. You never have to think about what heading level to start at.
-- **WCAG AA Color Contrast**: Audited the full theme (and the comment widget) with an automated accessibility scanner and fixed every contrast failure inherited from Bootstrap 4's defaults — nav links, body links, tag badges, and footer text all now meet the 4.5:1 minimum. Links inside body text are also underlined by default, not distinguished by color alone.
-- **Automatic Dark Mode**: The whole theme, including the comment widget, follows the visitor's OS/browser dark-mode preference (`prefers-color-scheme`) automatically — no toggle, no configuration. (Code blocks intentionally keep their light syntax-highlighting theme; see [Configuration Options](#configuration-options) if you'd like a dark-friendly Pygments style instead.)
+- **Corrected Heading Hierarchy**: The site's own name/logo in the navbar is the page's real `<h1>`; post/page titles render as `<h2>` underneath it. A small client-side script then auto-normalizes each post's own content headings so the shallowest one always lands at `<h3>`, regardless of whether you start writing a post at `#`, `##`, or anywhere else; it always nests correctly under the title with no gaps in the outline. You never have to think about what heading level to start at.
+- **WCAG AA Color Contrast**: Audited the full theme (and the comment widget) with an automated accessibility scanner and fixed every contrast failure inherited from Bootstrap 4's defaults: nav links, body links, tag badges, and footer text all now meet the 4.5:1 minimum. Links inside body text are also underlined by default, not distinguished by color alone.
+- **Automatic Dark Mode**: The whole theme, including the comment widget, follows the visitor's OS/browser dark-mode preference (`prefers-color-scheme`) automatically: no toggle, no configuration. (Code blocks intentionally keep their light syntax-highlighting theme; see [Configuration Options](#configuration-options) if you'd like a dark-friendly Pygments style instead.)
 - **Smart Logo Alt Text**: Adds support for custom theme-specific logo alternative text (`LOGO_ALT_TEXT`). Previously, Nikola hardcoded the logo's alt text to fall back to the site title (`alt="${blog_title}"`).
   - *Before*: Screen reader reads: `"My Awesome Website!"` (just site title)
   - *Now*: Screen reader reads: `"My Awesome Website Logo: Me bent over a terminal with a lukewarm coffee sitting on the desk for the past six hours..."`
@@ -38,14 +38,15 @@ I also blessedly, did not have to do this from the ground up. Thanks to [Carter 
   - *Now*: Browser tab title says: `"Blog | My Personal Awesome Website!"`
 
 ### 4. Zero-Maintenance Serverless Comments
-My biggest hesitation when switching from a CMS like WordPress to an SSG was the fact that I couldn't easily allow people to leave comments (feedback is important!). Every system Nikola supported was too much maintenance for someone that just wants to have a sight. Especially the ones requiring you to host your own comment server. I already host enough VPS apps that I'm notoriously bad at keeping track of. Plus,  running active server applications defeats the static purpose anyway.
+My biggest hesitation when switching from a CMS like WordPress to an SSG was the fact that I couldn't easily allow people to leave comments (feedback is important!). Every system Nikola supported was too much maintenance for someone that just wants to have a site. Especially the ones requiring you to host your own comment server. I already host enough VPS apps that I'm notoriously bad at keeping track of. Plus, running active server applications defeats the static purpose anyway.
 
 So, I built an out-of-the-box (or dirty hack, depending on the perspective) system that deploys in 3 minutes and adds zero overhead by relying on **Cloudflare's** free edge database and Workers.
 
 - Edge-Powered Discussion: Dynamically loads and posts comments via a lightweight API connected to a serverless Cloudflare D1 SQL database.
+- Threaded Replies: Supports nested replies of any depth; the theme collapses threads past 3 levels behind a "Show more replies" toggle so long conversations stay readable.
 - Privacy-First Email Hashing: Hashes commenter emails on the server using SHA-256 to load Gravatar avatars, keeping raw emails hidden from public browsers.
 - Self-Hosted Administration: Serves a clean, password-protected moderation dashboard directly from your Worker at `/admin` (approve/reject/spam comments in one click).
-- Multi-layered Spam Blockers: Uses a silent CSS-hidden honeypot to trap bots, and supports optional Cloudflare Turnstile checks and Discord alerts for pending comments.
+- Multi-layered Spam Blockers: Uses a silent CSS-hidden honeypot to trap bots, server-side rate limits, and supports optional Cloudflare Turnstile checks and Discord alerts for pending comments.
 
 ### 5. Copy-to-Clipboard Code Blocks
 - **One-Click Copying**: Automatically wraps every `<pre>` code block with a "Copy" button, letting readers copy a snippet without manually selecting text.
@@ -53,13 +54,13 @@ So, I built an out-of-the-box (or dirty hack, depending on the perspective) syst
 - **Zero Configuration**: Ships as a small, dependency-free `copy.js`/`copy.css` pair that's automatically included by the theme; no setup required.
 
 ### 6. Design Presets
-- **One-Line Restyling**: A single `"PRESET"` key in `THEME_CONFIG` swaps the accent color, corner rounding, spacing, heading typeface, and card style as one coordinated set, each pre-checked for WCAG AA contrast in both light and dark mode. Five presets ship with the theme, described in plain language so you can pick one without needing to see it — see [Design Presets](#design-presets) below.
+- **One-Line Restyling**: A single `"PRESET"` key in `THEME_CONFIG` swaps the accent color, corner rounding, spacing, heading typeface, and card style as one coordinated set, each pre-checked for WCAG AA contrast in both light and dark mode. Five presets ship with the theme, described in plain language so you can pick one without needing to see it. See [Design Presets](#design-presets) below.
 
 Used by developers building portfolio sites, blogs, and more. See [who's using it](#sites-using-this-theme).
 
 ## Installation
 
-Don't have a Nikola site yet? The fastest way to get one is with [uv](https://docs.astral.sh/uv/) (a fast Python package/environment manager):
+**Fastest path**, from nothing to a running site with this theme, using [uv](https://docs.astral.sh/uv/) (a fast Python package/environment manager):
 
 ```bash
 uv venv
@@ -122,7 +123,7 @@ THEME_CONFIG = {
         "comment_turnstile_site_key": "your-turnstile-site-key",
 
         # Optional: a named design preset (accent color, corner rounding, spacing,
-        # heading typeface, card style) — see "Design Presets" below for the five
+        # heading typeface, card style). See "Design Presets" below for the five
         # available names and what each one looks like
         "PRESET": "blog",
     }
