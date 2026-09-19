@@ -8,7 +8,7 @@
 
 I wanted to build a flexible, lightweight personal website, and Nikola was the one I reached for due to the aforementioned simplicity and lightweight nature, as well as my general familiarity with Pythonic workflows. The reason why this came into being is that while doing those customizations, I realized that there are some things that **should** be there and others that **could** be there to make it cooler but that required somewhat low-level editing. Thus, I did it for my website, then pulled the theme out, and now it's here for everyone who wants to not go through the time I did to learn the internal workings of this SSG and just make a website.
 
-I also blessedly, did not have to do this from the ground up. Thanks to [Carter Temm](https://github.com/cartertemm) for inspiring this, by building a variant of the theme bootstrap4 called bootstrap4_acccessible. This is where the very first feature comes from.
+I also blessedly, did not have to do this from the ground up. Thanks to [Carter Temm](https://github.com/cartertemm) for inspiring this, by building a variant of the theme bootstrap4 called bootstrap4_accessible. This is where the very first feature comes from.
 
 ---
 
@@ -106,7 +106,7 @@ Already have a Nikola site? Skip straight to the clone step: drop the repo into 
 
 ## Serverless Comments Setup
 
-To set up the database, deploy the edge Worker, and moderate comments, follow the detailed step-by-step instructions in the [Comment Server README](lazykola-comment-server/README.md).
+From inside `lazykola-comment-server/`, run `node setup.js` and it handles the database, schema, and deployment for you, stopping only to ask for an admin password. Full details, including the manual step-by-step version and optional extras like Turnstile and Discord alerts, are in the [Comment Server README](lazykola-comment-server/README.md).
 
 Once deployed, enable comments in your Nikola `conf.py`:
 ```python

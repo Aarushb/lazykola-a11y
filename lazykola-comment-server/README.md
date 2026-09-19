@@ -19,13 +19,24 @@ Make sure you have:
 - A free [Cloudflare Account](https://dash.cloudflare.com/sign-up).
 - [Node.js](https://nodejs.org/) (which includes `npm`/`npx`) installed on your computer.
 
-### 2. Install Dependencies
+### 2. Run the setup script
+
 Open a terminal in this directory (`lazykola-comment-server`) and run:
+```bash
+node setup.js
+```
+
+It installs dependencies, creates the D1 database, writes its id into `wrangler.toml`, pushes the schema, asks you (directly, via Wrangler's own prompt, this script never sees or stores it) for an admin dashboard password, deploys the Worker, and prints the exact `conf.py` snippet to paste in with your real deployed URL already filled in. If anything fails partway through, it stops and tells you what to fix; it's safe to just re-run afterward.
+
+<details>
+<summary>Step by step, if you'd rather run it manually or understand each part</summary>
+
+#### Install Dependencies
 ```bash
 npm install
 ```
 
-### 3. Create the D1 Database
+#### Create the D1 Database
 Create the database on your Cloudflare account by running:
 ```bash
 npx wrangler d1 create lazykola-db
@@ -35,7 +46,7 @@ Copy the database binding info printed in the terminal (specifically the `databa
 database_id = "your-copied-database-id-here"
 ```
 
-### 4. Initialize Database Schema
+#### Initialize Database Schema
 Deploy the comments table schema to your database:
 ```bash
 # Push schema to live production database
@@ -45,19 +56,21 @@ npx wrangler d1 execute lazykola-db --file=schema.sql
 npx wrangler d1 execute lazykola-db --file=schema.sql --local
 ```
 
-### 5. Set Admin Password
+#### Set Admin Password
 Set your admin dashboard login password securely:
 ```bash
 npx wrangler secret put ADMIN_PASSWORD
 ```
 *(Enter a strong password when prompted. The username to log in will be `admin`)*.
 
-### 6. Deploy to Cloudflare
+#### Deploy to Cloudflare
 Deploy your Worker to the live edge network:
 ```bash
 npx wrangler deploy
 ```
 Once completed, note down your Worker's URL (e.g., `https://lazykola-comments.your-subdomain.workers.dev`).
+
+</details>
 
 ---
 
